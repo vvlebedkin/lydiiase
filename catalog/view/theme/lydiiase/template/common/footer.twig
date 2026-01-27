@@ -1,0 +1,115 @@
+<footer class="footer">
+	<div class="container">
+		<div class="footer_wrapper">
+			<div class="footer_left">
+				<div class="footer_item">
+					<div class="footer_item-title">Навигация по сайту</div>
+					<ul
+						class="footer_menu">
+						{# Ссылки можно оставить статичными или выводить из категорий/информации #}
+						<li>
+							<a href="{{ home }}">Новинки</a>
+						</li>
+						<li>
+							<a href="{{ home }}">Каталог</a>
+						</li>
+						<li>
+							<a href="/delivery">Оплата и доставка</a>
+						</li>
+						<li>
+							<a href="/about">О нас</a>
+						</li>
+						<li>
+							<a href="{{ contact }}">Контакты</a>
+						</li>
+					</ul>
+				</div>
+				<div class="footer_item">
+					<div class="footer_item-title">Покупателям</div>
+					<ul
+						class="footer_menu">
+						{# Вывод динамических страниц из админки (Статьи) #}
+						{% if informations %}
+							{% for information in informations %}
+								<li>
+									<a href="{{ information.href }}">{{ information.title }}</a>
+								</li>
+							{% endfor %}
+						{% endif %}
+						<li>
+							<a href="{{ return }}">Правила возврата</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="footer_right">
+				<a href="{{ home }}" class="footer_logo">
+					<img src="catalog/view/theme/lydiiase/assets/img/footer_logo.svg" alt="{{ name }}">
+				</a>
+				<div class="footer_options">
+					<div class="footer_option">
+						<div class="footer_option-title">Электронная почта</div>
+						{# Выводим email из админки #}
+						<a href="mailto:{{ email }}" class="footer_option-link">{{ email }}</a>
+						<a href="mailto:{{ email2 }}" class="footer_option-link">{{ email2 }}</a>
+					</div>
+
+					<div class="footer_option">
+						<div class="footer_option-title">Телефон</div>
+						{# Используем telephone для текста и telephone_href для ссылки #}
+						<a href="tel:{{ telephone_href }}" class="footer_option-link">{{ telephone }}</a>
+					</div>
+					<div class="footer_option">
+						<div class="footer_option-title">Мы в социальных сетях</div>
+						<div class="footer_option-wrapper">
+							<div class="footer_option-tg">
+								<img src="catalog/view/theme/lydiiase/assets/img/footer_option-tg.svg" alt="">telegram
+							</div>
+							<div class="footer_option-right">
+								<div class="footer_option-desc">
+									<span>*</span>
+									— принадлежит компании Meta, признанной экстремистской и запрещённой на территории РФ
+								</div>
+								<div class="footer_option-messages">
+									{% if social_inst %}
+										<a href="{{ social_inst }}" target="_blank" class="footer_option-message">
+											<img src="catalog/view/theme/lydiiase/assets/img/footer_option-message1.svg" alt="">
+											<span>*</span>
+										</a>
+									{% endif %}
+									{% if social_tg %}
+										<a href="{{ social_tg }}" target="_blank" class="footer_option-message">
+											<img src="catalog/view/theme/lydiiase/assets/img/footer_option-message2.svg" alt="">
+										</a>
+									{% endif %}
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="footer_inner">
+			<a href="#" class="footer_inner-item footer_inner-polit">Политика конфиденциальности</a>
+			<div class="footer_inner-item">©
+				{{ "now"|date("Y") }},
+				{{ name }}
+				Все права защищены</div>
+		</div>
+	</div>
+</footer>
+
+{# ПОДКЛЮЧЕНИЕ СКРИПТОВ #}
+
+{# 1. Твои библиотеки #}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
+
+{# 2. Твой основной файл логики #}
+<script src="catalog/view/theme/lydiiase/assets/js/main.js"></script>
+
+{# 3. Системные скрипты OpenCart (модули, плагины, аналитика) #}
+{% for script in scripts %}
+	<script src="{{ script }}" type="text/javascript"></script>
+{% endfor %}</body></html>

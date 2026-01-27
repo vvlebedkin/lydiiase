@@ -31,6 +31,20 @@ class ControllerCommonFooter extends Controller {
 
 		$data['powered'] = sprintf($this->language->get('text_powered'), $this->config->get('config_name'), date('Y', time()));
 
+		// Добавляем телефон и почту из настроек магазина
+		$data['telephone'] = $this->config->get('config_telephone');
+		$data['email'] = $this->config->get('config_email');
+
+		// Формируем чистый номер для href (удаляем всё, кроме цифр и +)
+		$data['telephone_href'] = preg_replace('/[^\d+]/', '', $this->config->get('config_telephone'));
+
+		// Социальные сети (пока у нас нет полей в админке, добавим их сюда как переменные)
+		// Ниже я объясню, как добавить их в саму админку
+		$data['social_tg'] = $this->config->get('config_social_tg'); // Telegram
+		$data['social_inst'] = $this->config->get('config_social_inst'); // Ссылка на запрещенную сеть
+		$data['email2'] = $this->config->get('config_email2'); 
+
+
 		// Whos Online
 		if ($this->config->get('config_customer_online')) {
 			$this->load->model('tool/online');
