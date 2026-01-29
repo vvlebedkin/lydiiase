@@ -22,7 +22,7 @@ class ControllerExtensionModuleLatest extends Controller
                 $data['promo_banners'][] = [
                     'title' => $result['title'],
                     'link'  => $result['link'],
-                    'image' => $this->model_tool_image->resize($result['image'], 570, 750), // Размеры твоей картинки
+                    'image' => $this->model_tool_image->resize($result['image'], 1040, 1500), // Размеры твоей картинки
                 ];
             }
         }

@@ -1,0 +1,44 @@
+<section class="gallery">
+	<div class="container">
+		<div class="gallery_wrapper">
+			<div
+				class="gallery_left">
+				{# Заголовок можно оставить статичным или вытянуть из названия модуля #}
+				<h2 class="title">{{ title|default('Фотогалерея<br>с клиентами')|raw }}</h2>
+				<div class="gallery_arrows">
+					<div class="gallery_arrow prev" id="gallery_prev{{ module }}">
+						<img src="catalog/view/theme/lydiiase/assets/img/arrow_left.svg" alt="Назад">
+					</div>
+					<div class="gallery_arrow next" id="gallery_next{{ module }}">
+						<img src="catalog/view/theme/lydiiase/assets/img/arrow_right.svg" alt="Вперед">
+					</div>
+				</div>
+				<div class="gallery_desc">{{ description|default('Наши сумки носят не просто как аксессуар, а как часть своего стиля')|raw }}</div>
+			</div>
+
+			<div class="gallery_slider swiper" id="gallery_swiper{{ module }}">
+				<div class="swiper-wrapper">
+					{% for banner in banners %}
+						<div class="gallery_slide swiper-slide">
+							{% if banner.link %}
+								<a href="{{ banner.link }}"><img src="{{ banner.image }}" alt="{{ banner.title }}"></a>
+							{% else %}
+								<img src="{{ banner.image }}" alt="{{ banner.title }}">
+							{% endif %}
+						</div>
+					{% endfor %}
+				</div>
+
+				{# Дублирующие стрелки для мобильной версии, если они предусмотрены версткой #}
+				<div class="gallery_arrows mobile_only">
+					<div class="gallery_arrow prev" id="gallery_prev_mob{{ module }}">
+						<img src="catalog/view/theme/lydiiase/assets/img/arrow_left.svg" alt="">
+					</div>
+					<div class="gallery_arrow next" id="gallery_next_mob{{ module }}">
+						<img src="catalog/view/theme/lydiiase/assets/img/arrow_right.svg" alt="">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
