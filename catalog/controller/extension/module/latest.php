@@ -1,64 +1,84 @@
 <?php
-class ControllerExtensionModuleLatest extends Controller {
-	public function index($setting) {
-		$this->load->language('extension/module/latest');
+class ControllerExtensionModuleLatest extends Controller
+{
+    public function index($setting)
+    {
+        $this->load->language('extension/module/latest');
 
-		$this->load->model('catalog/product');
+        $this->load->model('catalog/product');
 
-		$this->load->model('tool/image');
+        $this->load->model('tool/image');
 
-		$data['products'] = array();
+        // Добавляем загрузку модели баннеров
+        $this->load->model('design/banner');
 
-		$results = $this->model_catalog_product->getLatestProducts($setting['limit']);
+// Допустим, мы создадим баннер с названием "Latest Promo"
+// Получаем картинки этого баннера
+        $data['promo_banners'] = [];
+        $results               = $this->model_design_banner->getBanner(10); // Замени 9 на ID созданного баннера
 
-		if ($results) {
-			foreach ($results as $result) {
-				if ($result['image']) {
-					$image = $this->model_tool_image->resize($result['image'], $setting['width'], $setting['height']);
-				} else {
-					$image = $this->model_tool_image->resize('placeholder.png', $setting['width'], $setting['height']);
-				}
+        foreach ($results as $result) {
+            if (is_file(DIR_IMAGE . $result['image'])) {
+                $data['promo_banners'][] = [
+                    'title' => $result['title'],
+                    'link'  => $result['link'],
+                    'image' => $this->model_tool_image->resize($result['image'], 570, 750), // Размеры твоей картинки
+                ];
+            }
+        }
 
-				if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
-					$price = $this->currency->format($this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-				} else {
-					$price = false;
-				}
+        $data['products'] = [];
 
-				if (!is_null($result['special']) && (float)$result['special'] >= 0) {
-					$special = $this->currency->format($this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-					$tax_price = (float)$result['special'];
-				} else {
-					$special = false;
-					$tax_price = (float)$result['price'];
-				}
-	
-				if ($this->config->get('config_tax')) {
-					$tax = $this->currency->format($tax_price, $this->session->data['currency']);
-				} else {
-					$tax = false;
-				}
+        $results = $this->model_catalog_product->getLatestProducts($setting['limit']);
 
-				if ($this->config->get('config_review_status')) {
-					$rating = $result['rating'];
-				} else {
-					$rating = false;
-				}
+        if ($results) {
+            foreach ($results as $result) {
+                if ($result['image']) {
+                    $image = $this->model_tool_image->resize($result['image'], $setting['width'], $setting['height']);
+                } else {
+                    $image = $this->model_tool_image->resize('placeholder.png', $setting['width'], $setting['height']);
+                }
 
-				$data['products'][] = array(
-					'product_id'  => $result['product_id'],
-					'thumb'       => $image,
-					'name'        => $result['name'],
-					'description' => utf8_substr(trim(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8'))), 0, $this->config->get('theme_' . $this->config->get('config_theme') . '_product_description_length')) . '..',
-					'price'       => $price,
-					'special'     => $special,
-					'tax'         => $tax,
-					'rating'      => $rating,
-					'href'        => $this->url->link('product/product', 'product_id=' . $result['product_id'])
-				);
-			}
+                if ($this->customer->isLogged() || ! $this->config->get('config_customer_price')) {
+                    $price = $this->currency->format($this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+                } else {
+                    $price = false;
+                }
 
-			return $this->load->view('extension/module/latest', $data);
-		}
-	}
+                if (! is_null($result['special']) && (float) $result['special'] >= 0) {
+                    $special   = $this->currency->format($this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+                    $tax_price = (float) $result['special'];
+                } else {
+                    $special   = false;
+                    $tax_price = (float) $result['price'];
+                }
+
+                if ($this->config->get('config_tax')) {
+                    $tax = $this->currency->format($tax_price, $this->session->data['currency']);
+                } else {
+                    $tax = false;
+                }
+
+                if ($this->config->get('config_review_status')) {
+                    $rating = $result['rating'];
+                } else {
+                    $rating = false;
+                }
+
+                $data['products'][] = [
+                    'product_id'  => $result['product_id'],
+                    'thumb'       => $image,
+                    'name'        => $result['name'],
+                    'description' => utf8_substr(trim(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8'))), 0, $this->config->get('theme_' . $this->config->get('config_theme') . '_product_description_length')) . '..',
+                    'price'       => $price,
+                    'special'     => $special,
+                    'tax'         => $tax,
+                    'rating'      => $rating,
+                    'href'        => $this->url->link('product/product', 'product_id=' . $result['product_id']),
+                ];
+            }
+
+            return $this->load->view('extension/module/latest', $data);
+        }
+    }
 }

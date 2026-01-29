@@ -1,42 +1,74 @@
-<h3>{{ heading_title }}</h3>
-<div class="row">
- {% for product in products %}
-  <div class="product-layout col-lg-3 col-md-3 col-sm-6 col-xs-12">
-    <div class="product-thumb transition">
-      <div class="image"><a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" /></a></div>
-      <div class="caption">
-        <h4><a href="{{ product.href }}">{{ product.name }}</a></h4>
-        <p>{{ product.description }}</p>
-        {% if product.rating %}
-        <div class="rating">
-          {% for i in 1..5 %}
-          {% if product.rating < i %}
-          <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
-          {% else %}
-          <span class="fa fa-stack"><i class="fa fa-star fa-stack-2x"></i><i class="fa fa-star-o fa-stack-2x"></i></span>
-          {% endif %}
-          {% endfor %}
-        </div>
-        {% endif %}
-        {% if product.price %}
-        <p class="price">
-          {% if not product.special %}
-          {{ product.price }}
-          {% else %}
-          <span class="price-new">{{ product.special }}</span> <span class="price-old">{{ product.price }}</span>
-          {% endif %}
-          {% if product.tax %}
-          <span class="price-tax">{{ text_tax }} {{ product.tax }}</span>
-          {% endif %}
-        </p>
-        {% endif %}
-      </div>
-      <div class="button-group">
-        <button type="button" onclick="cart.add('{{ product.product_id }}');"><i class="fa fa-shopping-cart"></i> <span class="hidden-xs hidden-sm hidden-md">{{ button_cart }}</span></button>
-        <button type="button" data-toggle="tooltip" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product.product_id }}');"><i class="fa fa-heart"></i></button>
-        <button type="button" data-toggle="tooltip" title="{{ button_compare }}" onclick="compare.add('{{ product.product_id }}');"><i class="fa fa-exchange"></i></button>
-      </div>
-    </div>
-  </div>
-  {% endfor %}
-</div>
+<section class="bestsellers">
+	<div class="container">
+		<div class="bestsellers_wrapper">
+			<div class="bestsellers_top">
+				<h2 class="title">{{ heading_title }}</h2>
+				{# В стандартном модуле нет ссылки "Смотреть все", можно прописать её вручную на страницу акций или категорию #}
+				<a href="{{ all_bestsellers_link|default('#') }}" class="bestsellers_link">
+					Смотреть все
+					<img src="catalog/view/theme/lydiiase/assets/img/link.svg" alt="">
+				</a>
+			</div>
+			<div class="bestsellers_items">
+				{% for product in products %}
+					<div class="catalog_item">
+						<div class="catalog_item-slider swiper">
+							<div
+								class="swiper-wrapper">
+								{# Пока контроллер отдает одно фото, выводим его. 
+								                                   Если добавим доп. фото в контроллере, здесь будет цикл #}
+								<div class="catalog_item-slide swiper-slide">
+									<a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}"></a>
+								</div>
+							</div>
+							<div class="catalog_item-pagination"></div>
+						</div>
+
+						<a href="{{ product.href }}" class="catalog_item-title">{{ product.name }}</a>
+
+						<div class="catalog_item-price">
+							{% if not product.special %}
+								{{ product.price }}
+							{% else %}
+								{{ product.special }}
+								<span>{{ product.price }}</span>
+							{% endif %}
+						</div>
+
+						{# Категория товара (в стандарте не передается, можно оставить статикой или допишем контроллер позже) #}
+						<div class="catalog_item-subtitle">Категория: аксессуары</div>
+
+						{# Оставляем твой HTML для цветов без изменений #}
+						<div class="catalog_item-colors">
+							<div class="catalog_item-colors_title">Цвет:</div>
+							<div class="catalog_item-color" style="background: #000000;"></div>
+							<div class="catalog_item-color" style="background: #62381C66; border: 1px solid #62381C"></div>
+							<div class="catalog_item-color" style="background: #47581B66; border: 1px solid #47581B"></div>
+						</div>
+
+						{# Кнопка купить с вызовом стандартной функции OpenCart #}
+						<button type="button" onclick="cart.add('{{ product.product_id }}');" class="catalog_item-btn btn">
+							В корзину
+							<svg width="27" height="32" viewbox="0 0 27 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M4.883 28.6889H21.2918C21.9703 28.6889 22.5224 28.1368 22.5224 27.4583V11.0495C22.5224 10.371 21.9703 9.81885 21.2918 9.81885H19.2407C19.0142 9.81885 18.8305 10.0026 18.8305 10.2291C18.8305 10.4555 19.0142 10.6393 19.2407 10.6393H21.2918C21.5174 10.6393 21.702 10.8231 21.702 11.0495V27.4583C21.702 27.6847 21.5174 27.8685 21.2918 27.8685H4.883C4.65738 27.8685 4.47278 27.6847 4.47278 27.4583V11.0495C4.47278 10.8231 4.65738 10.6393 4.883 10.6393H6.9341C7.16054 10.6393 7.34432 10.4555 7.34432 10.2291C7.34432 10.0026 7.16054 9.81885 6.9341 9.81885H4.883C4.2045 9.81885 3.65234 10.371 3.65234 11.0495V27.4583C3.65234 28.1368 4.2045 28.6889 4.883 28.6889Z" fill="black"/>
+								<path d="M8.98541 15.9457C9.21186 15.9457 9.39563 15.7619 9.39563 15.5355V9.59876C9.39563 7.44347 11.0521 5.69019 13.0876 5.69019C15.1231 5.69019 16.7796 7.44347 16.7796 9.59876V15.5355C16.7796 15.7619 16.9634 15.9457 17.1898 15.9457C17.4162 15.9457 17.6 15.7619 17.6 15.5355V9.59876C17.6 6.99141 15.5752 4.86975 13.0876 4.86975C10.6 4.86975 8.5752 6.99141 8.5752 9.59876V15.5355C8.5752 15.7619 8.75897 15.9457 8.98541 15.9457Z" fill="black"/>
+								<path d="M11.0362 9.81885C10.8098 9.81885 10.626 10.0026 10.626 10.2291C10.626 10.4555 10.8098 10.6393 11.0362 10.6393H15.1384C15.3648 10.6393 15.5486 10.4555 15.5486 10.2291C15.5486 10.0026 15.3648 9.81885 15.1384 9.81885H11.0362Z" fill="black"/>
+							</svg>
+						</button>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</section>
+
+<script>
+	// Инициализация Swiper для каждой карточки товара
+new Swiper('.catalog_item-slider', {
+pagination: {
+el: '.catalog_item-pagination',
+clickable: true
+},
+loop: true
+});
+</script>

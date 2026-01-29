@@ -1,26 +1,47 @@
-<div class="slideshow swiper-viewport">
-  <div id="slideshow{{ module }}" class="swiper-container">
-    <div class="swiper-wrapper"> {% for banner in banners %}
-      <div class="swiper-slide text-center">{% if banner.link %}<a href="{{ banner.link }}"><img src="{{ banner.image }}" alt="{{ banner.title }}" class="img-responsive" /></a>{% else %}<img src="{{ banner.image }}" alt="{{ banner.title }}" class="img-responsive" />{% endif %}</div>
-      {% endfor %} </div>
-  </div>
-  <div class="swiper-pagination slideshow{{ module }}"></div>
-  <div class="swiper-pager">
-    <div class="swiper-button-next"></div>
-    <div class="swiper-button-prev"></div>
-  </div>
-</div>
-<script type="text/javascript"><!--
-$('#slideshow{{ module }}').swiper({
-	mode: 'horizontal',
-	slidesPerView: 1,
-	pagination: '.slideshow{{ module }}',
-	paginationClickable: true,
-	nextButton: '.slideshow .swiper-button-next',
-    prevButton: '.slideshow .swiper-button-prev',
-    spaceBetween: 30,
-	autoplay: 2500,
-    autoplayDisableOnInteraction: true,
-	loop: true
-});
-//--></script>
+<section class="main">
+	<div class="main_slider swiper" id="slideshow{{ module }}">
+		<div class="swiper-wrapper">
+			{% for banner in banners %}
+				<div class="main_slide swiper-slide">
+					<div class="main_slide-img">
+						<picture>
+							{# Автоматическая подмена на мобильное фото, если оно создано по правилу имя_mobile.ext #}
+							{% set image_mobile = banner.image|replace({'.jpg': '_mobile.jpg', '.png': '_mobile.png', '.jpeg': '_mobile.jpeg'}) %}
+							<source srcset="{{ image_mobile }}" media="(max-width: 768px)"/>
+							<img src="{{ banner.image }}" alt="{{ banner.title }}">
+						</picture>
+					</div>
+					<div
+						class="container">
+						{# Используем |raw, чтобы работал <br> из админки #}
+						<h1 class="main_title">{{ banner.title|raw }}</h1>
+						{% if banner.link %}
+							<a href="{{ banner.link }}" class="main_btn btn">В каталог</a>
+						{% endif %}
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+
+		{# Стрелки и прогресс-бар из твоей верстки #}
+		<div class="main_slider-arrows">
+			<div class="main_slider-arrow prev" id="main_prev{{ module }}">
+				<svg width="16" height="16" viewbox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<g opacity="0.3">
+						<path d="M11.7406 15.8719C11.875 15.8719 12.0125 15.8188 12.1156 15.7156C12.3219 15.5094 12.3219 15.1719 12.1156 14.9656L5.05625 7.90626L12.0125 0.950012C12.2188 0.743762 12.2188 0.406262 12.0125 0.200012C11.8063 -0.00623798 11.4688 -0.00623798 11.2625 0.200012L3.92812 7.53126C3.72187 7.73751 3.72187 8.07501 3.92812 8.28126L11.3625 15.7156C11.4687 15.8219 11.6031 15.8719 11.7406 15.8719Z" fill="black"/>
+					</g>
+				</svg>
+			</div>
+			<div class="main_progress">
+				<span></span>
+			</div>
+			<div class="main_slider-arrow next" id="main_next{{ module }}">
+				<svg width="16" height="16" viewbox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<g opacity="0.3">
+						<path d="M4.25939 15.8719C4.12502 15.8719 3.9875 15.8188 3.88437 15.7156C3.67812 15.5094 3.67812 15.1719 3.88437 14.9656L10.9437 7.90626L3.9875 0.950012C3.78125 0.743762 3.78125 0.406262 3.9875 0.200012C4.19375 -0.00623798 4.53125 -0.00623798 4.7375 0.200012L12.0719 7.53126C12.2781 7.73751 12.2781 8.07501 12.0719 8.28126L4.6375 15.7156C4.53125 15.8219 4.39689 15.8719 4.25939 15.8719Z" fill="black"/>
+					</g>
+				</svg>
+			</div>
+		</div>
+	</div>
+</section>

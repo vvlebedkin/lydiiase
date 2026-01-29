@@ -1,111 +1,123 @@
 <!DOCTYPE html>
 <html dir="{{ direction }}" lang="{{ lang }}">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{{ title }}</title>
-    <base href="{{ base }}" />
-    {% if description %}
-    <meta name="description" content="{{ description }}" />
-    {% endif %}
-    {% if keywords %}
-    <meta name="keywords" content="{{ keywords }}" />
-    {% endif %}
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>{{ title }}</title>
+		<base href="{{ base }}"/>
+		{% if description %}
+			<meta name="description" content="{{ description }}"/>
+		{% endif %}
+		{% if keywords %}
+			<meta name="keywords" content="{{ keywords }}"/>
+		{% endif %}
 
-    {# Подключаем твои стили #}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css" />
-    <link rel="stylesheet" href="catalog/view/theme/lydiiase/assets/css/style.css">
+		{# Подключаем твои стили #}
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css"/>
+		<link
+		rel="stylesheet" href="catalog/view/theme/lydiiase/assets/css/style.css">
 
-    {# Здесь OpenCart будет подключать стили модулей, если нужно #}
-    {% for style in styles %}
-    <link href="{{ style.href }}" type="text/css" rel="{{ style.rel }}" media="{{ style.media }}" />
-    {% endfor %}
+		{# Здесь OpenCart будет подключать стили модулей, если нужно #}
+		{% for style in styles %}
+			<link href="{{ style.href }}" type="text/css" rel="{{ style.rel }}" media="{{ style.media }}"/>
+		{% endfor %}
 
-    <script src="catalog/view/javascript/jquery/jquery-2.1.1.min.js" type="text/javascript"></script>
-    
-    {# Вывод скриптов модулей #}
-    {% for script in scripts %}
-    <script src="{{ script }}" type="text/javascript"></script>
-    {% endfor %}
+		<script src="catalog/view/javascript/jquery/jquery-2.1.1.min.js" type="text/javascript"></script>
 
-    {{ analytics }}
-</head>
+		{# Вывод скриптов модулей #}
+		{% for script in scripts %}
+			<script src="{{ script }}" type="text/javascript"></script>
+		{% endfor %}
 
-<body>
+		{{ analytics }}
+	</head>
 
-    {# <div class="loader_body">
-        <span class="loader"></span>
-    </div> #}
+	<body>
 
-    {# Бегущая строка #}
-    <div class="top_lines-wrapper">
-        <div class="top_lines">
-            <div class="top_lines-row">
-                {# Делаем цикл на 8 повторений одной фразы #}
-                {% set promo_text = "Бесплатная доставка при заказе от 4000 рублей" %}
-                {% for i in 1..8 %}
-                    <div class="top_line">{{ promo_text }}</div>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="top_lines-close">
-            <img src="catalog/view/theme/lydiiase/assets/img/close.svg" alt="close">
-        </div>
-    </div>
+		{# <div class="loader_body">
+				        <span class="loader"></span>
+				    </div> #}
 
-    <header class="header">
-        <div class="container">
-            <div class="header_wrapper">
-                <div class="burger_menu"></div>
-                
-                {# Логотип #}
-                <a href="{{ home }}" class="header_logo">
-                    <img src="catalog/view/theme/lydiiase/assets/img/header_logo.svg" title="{{ name }}" alt="{{ name }}">
-                </a>
+		{# Бегущая строка #}
+			<div class="top_lines-wrapper"> <div class="top_lines">
+				<div
+					class="top_lines-row">
+					{# Делаем цикл на 8 повторений одной фразы #}
+					{% set promo_text = "Бесплатная доставка при заказе от 4000 рублей" %}
+					{% for i in 1..8 %}
+						<div class="top_line">{{ promo_text }}</div>
+					{% endfor %}
+				</div>
+			</div>
+			<div class="top_lines-close">
+				<img src="catalog/view/theme/lydiiase/assets/img/close.svg" alt="close">
+			</div>
+		</div>
 
-                <div class="header_links">
-                    <div class="header_search">
-                      <img src="catalog/view/theme/lydiiase/assets/img/header_link1.svg" alt="search">
-                      
-                      {# Выводим содержимое файла common/search.twig #}
-                      {{ search }}
-                      
-                      <div class="header_search-close"><img src="catalog/view/theme/lydiiase/assets/img/search_close.svg" alt=""></div>
-                      
-                      {# Выпадашка поиска (её лучше оставить здесь или перенести в search.twig) #}
-                      <div class="header_search-dropdown">
-                          <div class="header_search-items">
-                              </div>
-                      </div>
-                    </div>
-                    
-                    {# Ссылка на корзину #}
-                    {{ cart }}
-                </div>
-            </div>
+		<header class="header">
+			<div class="container">
+				<div class="header_wrapper">
+					<div class="burger_menu"></div>
 
-            <div class="header_inner">
-                <ul class="menu">
-                    {# Пример вывода категорий (OpenCart стандарт) #}
-                    {% for category in categories %}
-                        <li>
-                            <a href="{{ category.href }}">{{ category.name }}</a>
-                            {% if category.children %}
-                                <img src="catalog/view/theme/lydiiase/assets/img/menu_arrow.svg" alt="">
-                                <ul class="menu_dropdown">
-                                    {% for child in category.children %}
-                                        <li><a href="{{ child.href }}">{{ child.name }}</a></li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-                        </li>
-                    {% endfor %}
-                    {# Статические ссылки #}
-                    <li><a href="/about">О компании</a></li>
-                    <li><a href="/delivery">Оплата и доставка</a></li>
-                    <li><a href="/contact">Контакты</a></li>
-                </ul>
-            </div>
-        </div>
-    </header>
+					{# Логотип #}
+					<a href="{{ home }}" class="header_logo">
+						<img src="catalog/view/theme/lydiiase/assets/img/header_logo.svg" title="{{ name }}" alt="{{ name }}">
+					</a>
+
+					<div class="header_links">
+						<div class="header_search">
+							<img
+							src="catalog/view/theme/lydiiase/assets/img/header_link1.svg" alt="search">
+
+							{# Выводим содержимое файла common/search.twig #}
+							{{ search }}
+
+							<div class="header_search-close"><img src="catalog/view/theme/lydiiase/assets/img/search_close.svg" alt=""></div>
+
+							{# Выпадашка поиска (её лучше оставить здесь или перенести в search.twig) #}
+							<div class="header_search-dropdown">
+								<div class="header_search-items"></div>
+							</div>
+						</div>
+
+						{# Ссылка на корзину #}
+						{{ cart }}
+					</div>
+				</div>
+
+				<div class="header_inner">
+					<ul
+						class="menu">
+						{# Пункт Каталог с выпадающим списком всех категорий #}
+						<li>
+							<a href="#">Каталог</a>
+							<img src="catalog/view/theme/lydiiase/assets/img/menu_arrow.svg" alt="">
+							<ul class="menu_dropdown">
+								{% for category in categories %}
+									<li>
+										<a href="{{ category.href }}">{{ category.name }}</a>
+									</li>
+								{% endfor %}
+							</ul>
+						</li>
+
+						{# Системные и статические ссылки #}
+						<li>
+							<a href="{{ special ? special : '#' }}">Новинки</a>
+						</li>
+						<li>
+							<a href="{{ about ? about : '#' }}">О компании</a>
+						</li>
+						<li>
+							<a href="{{ delivery ? delivery : '#' }}">Оплата и доставка</a>
+						</li>
+						<li>
+							<a href="{{ contact }}">Контакты</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</header>
+	</body>
+</html>

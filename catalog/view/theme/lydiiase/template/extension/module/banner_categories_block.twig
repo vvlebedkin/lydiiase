@@ -1,0 +1,14 @@
+<section class="category_block">
+	<div class="container">
+		<div class="category_block-items">
+			{% for banner in banners %}
+				<a href="{{ banner.link }}" class="category_block-item">
+					<div class="category_block-img">
+						<img src="{{ banner.image }}" alt="{{ banner.title }}">
+					</div>
+					<h3 class="category_block-title">{{ banner.title }}</h3>
+				</a>
+			{% endfor %}
+		</div>
+	</div>
+</section>
