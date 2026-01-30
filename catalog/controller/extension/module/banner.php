@@ -16,12 +16,23 @@ class ControllerExtensionModuleBanner extends Controller
 
         $results = $this->model_design_banner->getBanner($setting['banner_id']);
 
+        // Переводим название в нижний регистр для проверки
+        $template_name = strtolower(str_replace(' ', '_', $setting['name']));
+
         foreach ($results as $result) {
             if (is_file(DIR_IMAGE . $result['image'])) {
+                // Если в названии модуля есть слово "gallery", отдаем оригинал
+                if (strpos($template_name, 'gallery') !== false) {
+                    $server = ($this->request->server['HTTPS'] ? $this->config->get('config_ssl') : $this->config->get('config_url'));
+                    $image  = $server . 'image/' . $result['image'];
+                } else {
+                    $image = $this->model_tool_image->resize($result['image'], $setting['width'], $setting['height']);
+                }
+
                 $data['banners'][] = [
                     'title' => $result['title'],
                     'link'  => $result['link'],
-                    'image' => $this->model_tool_image->resize($result['image'], $setting['width'], $setting['height']),
+                    'image' => $image,
                 ];
             }
         }

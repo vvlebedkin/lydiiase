@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+    <name>Custom Store Settings Fields</name>
+    <version>1.0</version>
+    <author>Custom</author>
+    <link>http://www.example.com/</link>
+    <code>custom_store_settings</code>
+
+    <!-- Add fields to admin controller -->
+    <file path="admin/controller/setting/setting.php">
+        <operation>
+            <search><![CDATA[$data['config_email'] = $this->config->get('config_email');]]></search>
+            <add position="after"><![CDATA[
+        $data['config_email2'] = $this->config->get('config_email2');
+        $data['config_social_tg'] = $this->config->get('config_social_tg');
+        $data['config_social_inst'] = $this->config->get('config_social_inst');
+            ]]></add>
+        </operation>
+    </file>
+
+    <!-- Add fields to admin template -->
+    <file path="admin/view/template/setting/setting.twig">
+        <operation>
+            <search><![CDATA[<input type="text" name="config_email" value="{{ config_email }}" placeholder="{{ entry_email }}" id="input-email" class="form-control" />]]></search>
+            <add position="after"><![CDATA[
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label" for="input-email2">{{ entry_email2|default('Дополнительный Email') }}</label>
+                      <div class="col-sm-10">
+                        <input type="text" name="config_email2" value="{{ config_email2 }}" placeholder="{{ entry_email2|default('Дополнительный Email') }}" id="input-email2" class="form-control" />
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label" for="input-social-tg">{{ entry_social_tg|default('Telegram') }}</label>
+                      <div class="col-sm-10">
+                        <input type="text" name="config_social_tg" value="{{ config_social_tg }}" placeholder="{{ entry_social_tg|default('Ссылка на Telegram') }}" id="input-social-tg" class="form-control" />
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label" for="input-social-inst">{{ entry_social_inst|default('Instagram') }}</label>
+                      <div class="col-sm-10">
+                        <input type="text" name="config_social_inst" value="{{ config_social_inst }}" placeholder="{{ entry_social_inst|default('Ссылка на Instagram') }}" id="input-social-inst" class="form-control" />
+                      </div>
+            ]]></add>
+        </operation>
+    </file>
+
+</modification>
