@@ -367,4 +367,18 @@
 	</operation>
 </file>
 
+<!-- Поддержка кастомных шаблонов для модуля HTML (по имени модуля) -->
+<file path="catalog/controller/extension/module/html.php">
+	<operation>
+		<search><![CDATA[return $this->load->view('extension/module/html', $data);]]></search>
+		<add position="replace"><![CDATA[
+		$template_name = 'html';
+		if ($setting['name'] && file_exists(DIR_TEMPLATE . $this->config->get('theme_default_directory') . '/template/extension/module/html_' . strtolower(str_replace(' ', '_', $setting['name'])) . '.twig')) {
+			$template_name = 'html_' . strtolower(str_replace(' ', '_', $setting['name']));
+		}
+		return $this->load->view('extension/module/' . $template_name, $data);
+		]]></add>
+	</operation>
+</file>
+
 </modification> 

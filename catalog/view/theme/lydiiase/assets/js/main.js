@@ -119,12 +119,6 @@ $(document).ready(function () {
     },
   });
 
-  $(".form_btn").click(function (e) {
-    e.preventDefault();
-    $(".subscribe_left-prev").addClass("hide");
-    $(".subscribe_left-back").addClass("show");
-  });
-
   $(".header_search").click(function () {
     if (!$(".header_search").hasClass("active")) {
       $(this).addClass("active");

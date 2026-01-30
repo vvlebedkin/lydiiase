@@ -1,0 +1,74 @@
+<section class="subscribe">
+	<div class="container">
+		<div class="subscribe_wrapper">
+			<div class="subscribe_left">
+				<div class="subscribe_left-prev">
+					<h2 class="title">{{ heading_title ? heading_title : 'подписаться <br> на новостную рассылку и акции' }}</h2>
+
+					<form class="subscribe_form" id="subscribe_form_module">
+						<div>
+							{# Изменили type="text" на type="email" #}
+							<input type="email" name="email" class="inp" placeholder="E-mail" required>
+						</div>
+						<label class="form_ok">
+							<input type="checkbox" name="agree" value="1" checked>
+							<span></span>
+							Нажимая кнопку отправить, вы соглашаетесь с
+							<a href="#">политикой обработки персональных данных</a>
+						</label>
+						<button type="submit" class="form_btn btn">Подписаться</button>
+					</form>
+				</div>
+
+				<div class="subscribe_left-back" style="display: none;">
+					<div class="subscribe_left-icon">
+						<img src="catalog/view/theme/lydiiase/assets/img/subscribe_left-icon.svg" alt="">
+					</div>
+					<div class="subscribe_left-subtitle">Вы успешно подписаны на рассылку</div>
+				</div>
+			</div>
+			<div class="subscribe_img">
+				<img src="catalog/view/theme/lydiiase/assets/img/subscribe_img.jpg" alt="">
+			</div>
+		</div>
+	</div>
+</section>
+
+<script>
+	$(document).ready(function () {
+
+
+$('#subscribe_form_module').on('submit', function (e) {
+
+e.preventDefault();
+var form = $(this);
+var btn = form.find('button');
+
+
+$.ajax({
+url: 'index.php?route=extension/module/subscribe/send',
+type: 'post',
+data: form.serialize(),
+dataType: 'json',
+beforeSend: function () {
+btn.prop('disabled', true);
+},
+complete: function () {
+btn.prop('disabled', false);
+},
+success: function (json) {
+if (json['error']) { // Теперь ошибка будет видна пользователю
+alert(json['error']);
+} else if (json['success']) {
+form.closest('.subscribe_left-prev').fadeOut(300, function () {
+$(this).next('.subscribe_left-back').addClass("show");
+});
+}
+},
+error: function (xhr, ajaxOptions, thrownError) {
+alert('Произошла ошибка на сервере. Проверьте логи.');
+}
+});
+});
+});
+</script>

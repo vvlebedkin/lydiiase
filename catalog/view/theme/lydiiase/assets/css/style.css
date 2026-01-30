@@ -1278,7 +1278,7 @@ ul {
 }
 
 .subscribe_left-back.show {
-    display: flex;
+    display: flex !important;
 }
 
 .subscribe_left-back {
