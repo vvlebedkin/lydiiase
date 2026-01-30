@@ -16,7 +16,7 @@
 							<div
 								class="swiper-wrapper">
 								{# Пока контроллер отдает одно фото, выводим его. 
-								                                   Если добавим доп. фото в контроллере, здесь будет цикл #}
+																                                   Если добавим доп. фото в контроллере, здесь будет цикл #}
 								<div class="catalog_item-slide swiper-slide">
 									<a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}"></a>
 								</div>
@@ -61,14 +61,3 @@
 		</div>
 	</div>
 </section>
-
-<script>
-	// Инициализация Swiper для каждой карточки товара
-new Swiper('.catalog_item-slider', {
-pagination: {
-el: '.catalog_item-pagination',
-clickable: true
-},
-loop: true
-});
-</script>

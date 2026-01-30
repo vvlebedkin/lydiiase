@@ -381,4 +381,25 @@
 	</operation>
 </file>
 
+<file path="catalog/controller/common/cart.php">
+    <operation>
+        <search><![CDATA[$data['text_items'] = sprintf($this->language->get('text_items')]]></search>
+        <add position="after"><![CDATA[
+        $data['items_count'] = $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0);
+        $data['cart'] = $this->url->link('checkout/cart');
+        ]]></add>
+    </operation>
+</file>
+
+<!-- Добавляем total_items в ответ JSON для обновления счетчика в шапке -->
+<file path="catalog/controller/checkout/cart.php">
+	<operation>
+		<search><![CDATA[$json['total'] = sprintf($this->language->get('text_items'), $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0), $this->currency->format($total, $this->session->data['currency']));]]></search>
+		<add position="after"><![CDATA[
+			$json['total_items'] = $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0);
+		]]></add>
+	</operation>
+</file>
+
+
 </modification> 

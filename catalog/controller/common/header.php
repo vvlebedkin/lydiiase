@@ -6,17 +6,18 @@ class ControllerCommonHeader extends Controller
         // Analytics
         $this->load->model('setting/extension');
 
-        $data['analytics'] = [];
+        $analytics_data = []; // ОБЯЗАТЕЛЬНО инициализируем массив
 
         $analytics = $this->model_setting_extension->getExtensions('analytics');
 
         foreach ($analytics as $analytic) {
             if ($this->config->get('analytics_' . $analytic['code'] . '_status')) {
-                $data['analytics'][] = $this->load->controller('extension/analytics/' . $analytic['code'], $this->config->get('analytics_' . $analytic['code'] . '_status'));
+                $analytics_data[] = $this->load->controller('extension/analytics/' . $analytic['code'], $this->config->get('analytics_' . $analytic['code'] . '_status'));
             }
         }
 
-        // $data['analytics'] = implode('', $analytics_data); // тут добавил
+// Теперь implode всегда получит массив, даже если он пустой
+        $data['analytics'] = implode('', $analytics_data);
 
         if ($this->request->server['HTTPS']) {
             $server = $this->config->get('config_ssl');

@@ -719,9 +719,14 @@ ul {
 }
 
 .catalog_item-title {
+
     font-weight: 400;
     font-size: 22px;
     margin-bottom: 12px;
+    display: block;
+}
+.catalog_item-title a{
+    color: inherit;
 }
 
 .catalog_item-price {
@@ -762,6 +767,7 @@ ul {
 .catalog_item-btn {
     opacity: 0;
     transition: all 0.3s;
+    cursor: pointer;
 }
 
 .catalog_item-colors_title {
@@ -884,6 +890,7 @@ ul {
     align-items: center;
     margin-bottom: 20px;
     height: 505px;
+    overflow: hidden;
 }
 
 .news_slide-img img {
@@ -1308,7 +1315,6 @@ ul {
     left: 0;
     width: 320px;
     background: #FFFFFFCC;
-    padding: 12px;
     opacity: 0;
     visibility: hidden;
     border-radius: 20px;
@@ -1320,7 +1326,11 @@ ul {
     visibility: visible;
     display: block;
 }
+.
+.header_search-dropdown:has(.search_item) {
+    padding: 12px;
 
+}
 .search_item {
     display: flex;
     justify-content: space-between;
