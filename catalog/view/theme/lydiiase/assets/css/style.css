@@ -725,6 +725,7 @@ ul {
     font-size: 22px;
     margin-bottom: 12px;
     display: block;
+    color: #000;
 }
 .catalog_item-title a{
     color: inherit;

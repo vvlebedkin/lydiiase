@@ -1,6 +1,7 @@
 <?php
 // Text
 $_['text_search']              = 'Поиск';
+$_['text_catalog']             = 'Каталог';
 $_['text_brand']               = 'Производитель';
 $_['text_manufacturer']        = 'Производитель:';
 $_['text_model']               = 'Модель:';
