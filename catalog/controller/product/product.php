@@ -464,6 +464,63 @@ class ControllerProductProduct extends Controller
 
             $data['recurrings'] = $this->model_catalog_product->getProfiles($this->request->get['product_id']);
 
+            // --- ЛОГИКА "СМОТРЕЛИ НЕДАВНО" ---
+if (!isset($this->session->data['recently_viewed'])) {
+    $this->session->data['recently_viewed'] = array();
+}
+
+// Добавляем текущий товар в начало списка, если его там еще нет
+if (!in_array($this->request->get['product_id'], $this->session->data['recently_viewed'])) {
+    array_unshift($this->session->data['recently_viewed'], $this->request->get['product_id']);
+} else {
+    // Если товар уже был, перемещаем его в начало
+    $key = array_search($this->request->get['product_id'], $this->session->data['recently_viewed']);
+    unset($this->session->data['recently_viewed'][$key]);
+    array_unshift($this->session->data['recently_viewed'], $this->request->get['product_id']);
+}
+
+// Храним только последние 6 товаров
+$this->session->data['recently_viewed'] = array_slice($this->session->data['recently_viewed'], 0, 6);
+
+$data['recently_viewed_products'] = array();
+
+foreach ($this->session->data['recently_viewed'] as $recent_id) {
+    // Не показываем в списке "Недавно смотрели" тот товар, на странице которого мы сейчас находимся
+    if ($recent_id == $this->request->get['product_id']) continue;
+
+    $product_info = $this->model_catalog_product->getProduct($recent_id);
+
+    if ($product_info) {
+        if ($product_info['image']) {
+            $image = $this->model_tool_image->resize($product_info['image'], 450, 570); // Размеры под твою верстку
+        } else {
+            $image = $this->model_tool_image->resize('placeholder.png', 450, 570);
+        }
+
+        if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
+            $price = $this->currency->format($this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+        } else {
+            $price = false;
+        }
+
+        if ((float)$product_info['special']) {
+            $special = $this->currency->format($this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+        } else {
+            $special = false;
+        }
+
+        $data['recently_viewed_products'][] = array(
+            'product_id'  => $product_info['product_id'],
+            'thumb'       => $image,
+            'name'        => $product_info['name'],
+            'model'       => $product_info['model'],
+            'price'       => $price,
+            'special'     => $special,
+            'href'        => $this->url->link('product/product', 'product_id=' . $product_info['product_id'])
+        );
+    }
+}
+
             $this->model_catalog_product->updateViewed($this->request->get['product_id']);
 
             $data['column_left']    = $this->load->controller('common/column_left');

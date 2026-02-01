@@ -262,10 +262,8 @@ var cart = {
       dataType: "json",
       beforeSend: function () {
         $("#cart > button").button("loading");
-        alert("beforeSend");
       },
       complete: function () {
-        alert("complete");
         $("#cart > button").button("reset");
       },
       success: function (json) {
@@ -274,7 +272,6 @@ var cart = {
         if (json["redirect"]) {
           location = json["redirect"];
         }
-        alert("ddd");
         if (json["success"]) {
           $("#content")
             .parent()

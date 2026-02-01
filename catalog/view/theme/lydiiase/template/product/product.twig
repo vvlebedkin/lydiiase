@@ -163,18 +163,20 @@
 	</div>
 </section>
 
-{# Рекомендуемые товары (Смотрели недавно) #}
-{% if products %}
+{# Секция "Смотрели недавно" #}
+{% if recently_viewed_products %}
 	<section class="other">
 		<div class="container">
-			<h2 class="title">{{ text_related }}</h2>
-			<div class="bestsellers_items swiper-related">
+			<h2 class="title">Смотрели недавно</h2>
+			<div class="bestsellers_items swiper-recently">
 				<div class="swiper-wrapper">
-					{% for product in products %}
+					{% for product in recently_viewed_products %}
 						<div class="catalog_item swiper-slide">
-							<div class="catalog_item-slider swiper">
-								<div class="swiper-wrapper">
-									<div class="catalog_item-slide swiper-slide"><img src="{{ product.thumb }}" alt="{{ product.name }}"></div>
+							<div class="catalog_item-slider">
+								<div class="catalog_item-slide">
+									<a href="{{ product.href }}">
+										<img src="{{ product.thumb }}" alt="{{ product.name }}">
+									</a>
 								</div>
 							</div>
 							<div class="catalog_item-title">
@@ -189,7 +191,9 @@
 								{% endif %}
 							</div>
 							<div class="catalog_item-subtitle">{{ product.model }}</div>
-							<a href="javascript:void(0);" onclick="cart.add('{{ product.product_id }}');" class="catalog_item-btn btn">В корзину</a>
+							<a href="javascript:void(0);" onclick="cart.add('{{ product.product_id }}');" class="catalog_item-btn btn">
+								В корзину
+							</a>
 						</div>
 					{% endfor %}
 				</div>
@@ -358,11 +362,11 @@ $('#review').load(this.href);
 $('#review').fadeIn('slow');
 });
 
-$('#review').load('index.php?route=product/product/review&product_id=       {{ product_id }}');
+$('#review').load('index.php?route=product/product/review&product_id=         {{ product_id }}');
 
 $('#button-review').on('click', function () {
 $.ajax({
-url: 'index.php?route=product/product/write&product_id=       {{ product_id }}',
+url: 'index.php?route=product/product/write&product_id=         {{ product_id }}',
 type: 'post',
 dataType: 'json',
 data: $("#form-review").serialize(),
