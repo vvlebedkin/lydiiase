@@ -136,16 +136,21 @@ class ControllerProductCategory extends Controller {
 			$results = $this->model_catalog_category->getCategories($category_id);
 
 			foreach ($results as $result) {
-				$filter_data = array(
-					'filter_category_id'  => $result['category_id'],
-					'filter_sub_category' => true
-				);
+    // 1. Обработка изображения подкатегории
+    if ($result['image']) {
+        // Указываем размеры согласно твоей верстке (например, 250x250 или свои значения)
+        $category_image = $this->model_tool_image->resize($result['image'], 296, 370);
+    } else {
+        // Заглушка, если фото не загружено
+        $category_image = $this->model_tool_image->resize('placeholder.png', 296, 370);
+    }
 
-				$data['categories'][] = array(
-					'name' => $result['name'] . ($this->config->get('config_product_count') ? ' (' . $this->model_catalog_product->getTotalProducts($filter_data) . ')' : ''),
-					'href' => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '_' . $result['category_id'] . $url)
-				);
-			}
+    $data['categories'][] = array(
+        'name'  => $result['name'], // Убрали условие с config_product_count (счетчик)
+        'thumb' => $category_image, // Добавили обработанную картинку
+        'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '_' . $result['category_id'] . $url)
+    );
+}
 
 			$data['products'] = array();
 
@@ -168,6 +173,22 @@ class ControllerProductCategory extends Controller {
 				} else {
 					$image = $this->model_tool_image->resize('placeholder.png', $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height'));
 				}
+
+				// --- НАЧАЛО ДОРАБОТКИ: Дополнительные фото для Swiper ---
+    $additional_images = array();
+    $results_images = $this->model_catalog_product->getProductImages($result['product_id']);
+    
+    // Добавляем главное фото первым в слайдер
+    $additional_images[] = $image;
+
+    foreach ($results_images as $result_image) {
+        $additional_images[] = $this->model_tool_image->resize(
+            $result_image['image'], 
+            $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width'), 
+            $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height')
+        );
+    }
+    // --- КОНЕЦ ДОРАБОТКИ ---
 
 				if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
 					$price = $this->currency->format($this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
@@ -195,19 +216,62 @@ class ControllerProductCategory extends Controller {
 					$rating = false;
 				}
 
-				$data['products'][] = array(
-					'product_id'  => $result['product_id'],
-					'thumb'       => $image,
-					'name'        => $result['name'],
-					'description' => utf8_substr(trim(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8'))), 0, $this->config->get('theme_' . $this->config->get('config_theme') . '_product_description_length')) . '..',
-					'price'       => $price,
-					'special'     => $special,
-					'tax'         => $tax,
-					'minimum'     => $result['minimum'] > 0 ? $result['minimum'] : 1,
-					'rating'      => $result['rating'],
-					'href'        => $this->url->link('product/product', 'path=' . $this->request->get['path'] . '&product_id=' . $result['product_id'] . $url)
-				);
+			// --- 1. Получаем название категории для подзаголовка ---
+    $category_name = '';
+    $categories = $this->model_catalog_product->getCategories($result['product_id']);
+    if ($categories) {
+        // Берем первую попавшуюся категорию товара
+        $first_category = $this->model_catalog_category->getCategory($categories[0]['category_id']);
+        if ($first_category) {
+            $category_name = $first_category['name'];
+        }
+    }
+
+    // --- 2. Получаем цвета и вытаскиваем HEX-код ---
+    $colors = array();
+    $product_options = $this->model_catalog_product->getProductOptions($result['product_id']);
+
+    foreach ($product_options as $option) {
+        // Проверяем, что это опция "Цвет"
+        if (utf8_strtolower($option['name']) == 'цвет') {
+            foreach ($option['product_option_value'] as $option_value) {
+                $name = $option_value['name'];
+                $hex = '#ccc'; // Цвет по умолчанию
+
+                // Ищем HEX-код в названии (например, "Синий #0000ff")
+                if (preg_match('/#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})/', $name, $matches)) {
+                    $hex = $matches[0];
+                    $name = trim(str_replace($hex, '', $name)); // Убираем код из названия для красоты
+                }
+
+                $colors[] = array(
+                    'name'       => $name,
+                    'color_code' => $hex
+                );
+            }
+        }
+    }
+
+    $data['products'][] = array(
+        'product_id'  => $result['product_id'],
+        'thumb'       => $image,
+        'images'      => $additional_images,
+        'category'    => $category_name, // Передаем название категории
+        'colors'      => $colors,
+        'name'        => $result['name'],
+        'description' => utf8_substr(trim(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8'))), 0, $this->config->get('theme_' . $this->config->get('config_theme') . '_product_description_length')) . '..',
+        'price'       => $price,
+        'special'     => $special,
+        'tax'         => $tax,
+        'minimum'     => $result['minimum'] > 0 ? $result['minimum'] : 1,
+        'rating'      => $result['rating'],
+        'href'        => $this->url->link('product/product', 'path=' . $this->request->get['path'] . '&product_id=' . $result['product_id'] . $url)
+    );
 			}
+
+			// Добавим переменные для текста "Показано 6 из 152"
+$data['product_total'] = $product_total;
+$data['shown_count'] = count($data['products']);
 
 			$url = '';
 

@@ -139,7 +139,7 @@ $(document).ready(function () {
     $(this).find(".menu_dropdown").slideToggle(400);
   });
 
-  $(".catalog_filter-price").each(function () {
+  /* $(".catalog_filter-price").each(function () {
     var $slider = $(this);
     var $container = $slider.closest(".catalog_filter-slider");
     var $minSpan = $container.find(".filter_slider-value.min span");
@@ -164,7 +164,7 @@ $(document).ready(function () {
       return isNaN(parsed) ? null : parsed;
     }
 
-    $slider.slider({
+   $slider.slider({
       range: true,
       min: minPrice,
       max: maxPrice,
@@ -298,7 +298,7 @@ $(document).ready(function () {
     $maxSpan.text(formatNumber(initialValues[1]));
     $minInput.val(formatNumber(initialValues[0]) + " ₽");
     $maxInput.val(formatNumber(initialValues[1]) + " ₽");
-  });
+  }); */
 
   $(".catalog_aside-tab").click(function () {
     $(this).next().slideToggle(400);
