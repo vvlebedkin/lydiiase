@@ -90,7 +90,9 @@
 									{% set color_code = color_parts[0]|trim %}
 									{% set color_name = color_parts[1] is defined ? color_parts[1]|trim : color_code %}
 									<label class="card_color">
-										<input type="radio" name="option[{{ option.product_option_id }}]" value="{{ option_value.product_option_value_id }}" data-name="{{ color_name }}">
+										<input
+										type="radio" name="option[{{ option.product_option_id }}]" value="{{ option_value.product_option_value_id }}" data-name="{{ color_name }}" {% if loop.first %} checked {% endif %}>
+										{# Этот код делает первый цвет выбранным #}
 										<span style="background-color: {{ color_code }};"></span>
 									</label>
 								{% endfor %}
@@ -362,11 +364,11 @@ $('#review').load(this.href);
 $('#review').fadeIn('slow');
 });
 
-$('#review').load('index.php?route=product/product/review&product_id=         {{ product_id }}');
+$('#review').load('index.php?route=product/product/review&product_id=           {{ product_id }}');
 
 $('#button-review').on('click', function () {
 $.ajax({
-url: 'index.php?route=product/product/write&product_id=         {{ product_id }}',
+url: 'index.php?route=product/product/write&product_id=           {{ product_id }}',
 type: 'post',
 dataType: 'json',
 data: $("#form-review").serialize(),
@@ -411,15 +413,24 @@ enabled: true
 	type="text/javascript">
 	<!--
 	$(document).ready(function () {
+/**
+     * 1. ЛОГИКА ВЫБОРА ЦВЕТА
+     */
+// Обновляем текст в заголовке при клике на кружочек цвета
 $('.card_color input[type="radio"]').on('change', function () {
 var selectedColorName = $(this).data('name');
-if (selectedColorName) {
+if (selectedColorName) { // Находим элемент, где написано "Выберите цвет" и меняем текст
 $('#option-value-name').text(selectedColorName);
 }
 });
+
+// Принудительно вызываем событие change для первого (уже выбранного) элемента,
+// чтобы при загрузке страницы сразу подставилось название цвета
+$('.card_color input[type="radio"]:checked').trigger('change');
 });
 //
 	-->
 </script>
+
 
 {{ footer }}
