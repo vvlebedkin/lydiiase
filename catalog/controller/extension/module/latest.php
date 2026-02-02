@@ -72,14 +72,19 @@ class ControllerExtensionModuleLatest extends Controller
                 foreach ($options as $option) {
                     if (utf8_strtolower($option['name']) == 'цвет') {
                         foreach ($option['product_option_value'] as $option_value) {
-                            $color_code = '#ccc'; // Цвет по умолчанию
-                            $color_name = $option_value['name'];
+                            $raw_name   = $option_value['name'];
+                            $color_code = '#ccc'; // По умолчанию
+                            $color_name = $raw_name;
 
-                            // Ищем HEX-код в названии опции
-                            if (preg_match('/#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})/', $color_name, $matches)) {
+                            if (strpos($raw_name, '|') !== false) {
+                                // Если есть разделитель, разбиваем строку
+                                $parts      = explode('|', $raw_name);
+                                $color_code = trim($parts[0]);
+                                $color_name = trim($parts[1]);
+                            } elseif (preg_match('/#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})/', $raw_name, $matches)) {
+                                // Если разделителя нет, но есть HEX-код (старая схема)
                                 $color_code = $matches[0];
-                                // Очищаем название от HEX-кода
-                                $color_name = trim(str_replace($matches[0], '', $color_name));
+                                $color_name = trim(str_replace($color_code, '', $raw_name));
                             }
 
                             $colors[] = [

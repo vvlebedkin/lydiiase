@@ -235,18 +235,24 @@ class ControllerProductCategory extends Controller {
         // Проверяем, что это опция "Цвет"
         if (utf8_strtolower($option['name']) == 'цвет') {
             foreach ($option['product_option_value'] as $option_value) {
-                $name = $option_value['name'];
-                $hex = '#ccc'; // Цвет по умолчанию
+                $raw_name = $option_value['name'];
+                $color_code = '#ccc'; // По умолчанию
+                $color_name = $raw_name;
 
-                // Ищем HEX-код в названии (например, "Синий #0000ff")
-                if (preg_match('/#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})/', $name, $matches)) {
-                    $hex = $matches[0];
-                    $name = trim(str_replace($hex, '', $name)); // Убираем код из названия для красоты
+                if (strpos($raw_name, '|') !== false) {
+                    // Если есть разделитель, разбиваем строку
+                    $parts = explode('|', $raw_name);
+                    $color_code = trim($parts[0]);
+                    $color_name = trim($parts[1]);
+                } elseif (preg_match('/#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})/', $raw_name, $matches)) {
+                    // Если разделителя нет, но есть HEX-код (старая схема)
+                    $color_code = $matches[0];
+                    $color_name = trim(str_replace($color_code, '', $raw_name));
                 }
 
                 $colors[] = array(
-                    'name'       => $name,
-                    'color_code' => $hex
+                    'name'       => $color_name,
+                    'color_code' => $color_code
                 );
             }
         }
