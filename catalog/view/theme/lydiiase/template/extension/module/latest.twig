@@ -42,11 +42,14 @@
 									</div>
 								</div>
 
-								{# Оставляем HTML цветов (пока статика) #}
-								<div class="catalog_item-colors">
-									<div class="catalog_item-color" style="background: #62381C;"></div>
-									<div class="catalog_item-color" style="background: #47581B;"></div>
-								</div>
+								{# Динамический вывод цветов #}
+								{% if product.colors %}
+									<div class="catalog_item-colors">
+										{% for color in product.colors %}
+											<div class="catalog_item-color" style="background: {{ color.color_code }};" title="{{ color.name }}"></div>
+										{% endfor %}
+									</div>
+								{% endif %}
 							</div>
 						{% endfor %}
 					</div>

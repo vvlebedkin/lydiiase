@@ -65,6 +65,31 @@ class ControllerExtensionModuleLatest extends Controller
                     $rating = false;
                 }
 
+                // Получение опций для цвета
+                $colors  = [];
+                $options = $this->model_catalog_product->getProductOptions($result['product_id']);
+
+                foreach ($options as $option) {
+                    if (utf8_strtolower($option['name']) == 'цвет') {
+                        foreach ($option['product_option_value'] as $option_value) {
+                            $color_code = '#ccc'; // Цвет по умолчанию
+                            $color_name = $option_value['name'];
+
+                            // Ищем HEX-код в названии опции
+                            if (preg_match('/#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})/', $color_name, $matches)) {
+                                $color_code = $matches[0];
+                                // Очищаем название от HEX-кода
+                                $color_name = trim(str_replace($matches[0], '', $color_name));
+                            }
+
+                            $colors[] = [
+                                'name'       => $color_name,
+                                'color_code' => $color_code,
+                            ];
+                        }
+                    }
+                }
+
                 $data['products'][] = [
                     'product_id'  => $result['product_id'],
                     'thumb'       => $image,
@@ -74,6 +99,7 @@ class ControllerExtensionModuleLatest extends Controller
                     'special'     => $special,
                     'tax'         => $tax,
                     'rating'      => $rating,
+                    'colors'      => $colors, // Добавляем цвета
                     'href'        => $this->url->link('product/product', 'product_id=' . $result['product_id']),
                 ];
             }

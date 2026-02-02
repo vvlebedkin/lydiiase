@@ -910,6 +910,10 @@ ul {
     font-size: 18px;
     line-height: 110%;
 }
+.news_slide-title a{
+    color: inherit;
+}
+
 
 .news_slide .catalog_item-colors {
     opacity: 1;
