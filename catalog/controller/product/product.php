@@ -483,40 +483,89 @@ if (!in_array($this->request->get['product_id'], $this->session->data['recently_
 $this->session->data['recently_viewed'] = array_slice($this->session->data['recently_viewed'], 0, 6);
 
 $data['recently_viewed_products'] = array();
+$image_width = $this->config->get('theme_' . $this->config->get('config_theme') . '_image_related_width');
+$image_height = $this->config->get('theme_' . $this->config->get('config_theme') . '_image_related_height');
+
 
 foreach ($this->session->data['recently_viewed'] as $recent_id) {
     // Не показываем в списке "Недавно смотрели" тот товар, на странице которого мы сейчас находимся
     if ($recent_id == $this->request->get['product_id']) continue;
 
-    $product_info = $this->model_catalog_product->getProduct($recent_id);
+    $result = $this->model_catalog_product->getProduct($recent_id);
 
-    if ($product_info) {
-        if ($product_info['image']) {
-            $image = $this->model_tool_image->resize($product_info['image'], 450, 570); // Размеры под твою верстку
+    if ($result) {
+        if ($result['image']) {
+            $image = $this->model_tool_image->resize($result['image'], $image_width, $image_height);
         } else {
-            $image = $this->model_tool_image->resize('placeholder.png', 450, 570);
+            $image = $this->model_tool_image->resize('placeholder.png', $image_width, $image_height);
         }
 
+		// Дополнительные изображения
+		$images = array();
+		$images[] = array(
+			'popup' => $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height')),
+			'thumb' => $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_height'))
+		);
+		$additional_images = $this->model_catalog_product->getProductImages($result['product_id']);
+		foreach ($additional_images as $additional_image) {
+			$images[] = array(
+				'popup' => $this->model_tool_image->resize($additional_image['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height')),
+				'thumb' => $this->model_tool_image->resize($additional_image['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_height'))
+			);
+		}
+
+		// Категория
+		$category_name = '';
+		$categories = $this->model_catalog_product->getCategories($result['product_id']);
+		if ($categories) {
+			$category_info = $this->model_catalog_category->getCategory($categories[0]['category_id']);
+			if($category_info) {
+				$category_name = $category_info['name'];
+			}
+		}
+		
+		// Опции (Цвет)
+		$colors = array();
+		$options = $this->model_catalog_product->getProductOptions($result['product_id']);
+		foreach ($options as $option) {
+			if (strtolower($option['name']) == 'цвет' || strtolower($option['name']) == 'color') {
+				foreach ($option['product_option_value'] as $option_value) {
+					$color_name = $option_value['name'];
+					$color_code = '';
+					if (preg_match('/(#[\da-fA-F]{6})/', $color_name, $matches)) {
+						$color_code = $matches[1];
+						$color_name = trim(str_replace($matches[1], '', $color_name));
+					}
+					$colors[] = array(
+						'name' => $color_name,
+						'color_code' => $color_code
+					);
+				}
+			}
+		}
+
         if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
-            $price = $this->currency->format($this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+            $price = $this->currency->format($this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
         } else {
             $price = false;
         }
 
-        if ((float)$product_info['special']) {
-            $special = $this->currency->format($this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+        if ((float)$result['special']) {
+            $special = $this->currency->format($this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
         } else {
             $special = false;
         }
 
         $data['recently_viewed_products'][] = array(
-            'product_id'  => $product_info['product_id'],
+            'product_id'  => $result['product_id'],
             'thumb'       => $image,
-            'name'        => $product_info['name'],
-            'model'       => $product_info['model'],
+			'images'      => $images,
+			'category'    => $category_name,
+			'colors'      => $colors,
+            'name'        => $result['name'],
             'price'       => $price,
             'special'     => $special,
-            'href'        => $this->url->link('product/product', 'product_id=' . $product_info['product_id'])
+            'href'        => $this->url->link('product/product', 'product_id=' . $result['product_id'])
         );
     }
 }

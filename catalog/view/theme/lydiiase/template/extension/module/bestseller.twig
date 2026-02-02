@@ -13,13 +13,12 @@
 				{% for product in products %}
 					<div class="catalog_item">
 						<div class="catalog_item-slider swiper">
-							<div
-								class="swiper-wrapper">
-								{# Пока контроллер отдает одно фото, выводим его. 
-																                                   Если добавим доп. фото в контроллере, здесь будет цикл #}
-								<div class="catalog_item-slide swiper-slide">
-									<a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}"></a>
-								</div>
+							<div class="swiper-wrapper">
+								{% for image in product.images %}
+									<div class="catalog_item-slide swiper-slide">
+										<a href="{{ product.href }}"><img src="{{ image.thumb }}" alt="{{ product.name }}"></a>
+									</div>
+								{% endfor %}
 							</div>
 							<div class="catalog_item-pagination"></div>
 						</div>
@@ -30,23 +29,24 @@
 							{% if not product.special %}
 								{{ product.price }}
 							{% else %}
-								{{ product.special }}
+								<p>{{ product.special }}</p>
 								<span>{{ product.price }}</span>
 							{% endif %}
 						</div>
 
-						{# Категория товара (в стандарте не передается, можно оставить статикой или допишем контроллер позже) #}
-						<div class="catalog_item-subtitle">Категория: аксессуары</div>
+						{% if product.category %}
+							<div class="catalog_item-subtitle">Категория: {{ product.category }}</div>
+						{% endif %}
 
-						{# Оставляем твой HTML для цветов без изменений #}
-						<div class="catalog_item-colors">
-							<div class="catalog_item-colors_title">Цвет:</div>
-							<div class="catalog_item-color" style="background: #000000;"></div>
-							<div class="catalog_item-color" style="background: #62381C66; border: 1px solid #62381C"></div>
-							<div class="catalog_item-color" style="background: #47581B66; border: 1px solid #47581B"></div>
-						</div>
+						{% if product.colors %}
+							<div class="catalog_item-colors">
+								<div class="catalog_item-colors_title">Цвет:</div>
+								{% for color in product.colors %}
+									<div class="catalog_item-color" style="background: {{ color.color_code }};" title="{{ color.name }}"></div>
+								{% endfor %}
+							</div>
+						{% endif %}
 
-						{# Кнопка купить с вызовом стандартной функции OpenCart #}
 						<button type="button" onclick="cart.add('{{ product.product_id }}');" class="catalog_item-btn btn">
 							В корзину
 							<svg width="27" height="32" viewbox="0 0 27 32" fill="none" xmlns="http://www.w3.org/2000/svg">

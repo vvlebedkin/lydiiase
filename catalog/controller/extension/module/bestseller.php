@@ -4,7 +4,7 @@ class ControllerExtensionModuleBestSeller extends Controller {
 		$this->load->language('extension/module/bestseller');
 
 		$this->load->model('catalog/product');
-
+		$this->load->model('catalog/category');
 		$this->load->model('tool/image');
 
 		$data['products'] = array();
@@ -17,6 +17,50 @@ class ControllerExtensionModuleBestSeller extends Controller {
 					$image = $this->model_tool_image->resize($result['image'], $setting['width'], $setting['height']);
 				} else {
 					$image = $this->model_tool_image->resize('placeholder.png', $setting['width'], $setting['height']);
+				}
+
+				// Дополнительные изображения
+				$images = array();
+				$images[] = array(
+					'popup' => $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height')),
+					'thumb' => $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_height'))
+				);
+				$additional_images = $this->model_catalog_product->getProductImages($result['product_id']);
+				foreach ($additional_images as $additional_image) {
+					$images[] = array(
+						'popup' => $this->model_tool_image->resize($additional_image['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height')),
+						'thumb' => $this->model_tool_image->resize($additional_image['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_height'))
+					);
+				}
+
+				// Категория
+				$category_name = '';
+				$categories = $this->model_catalog_product->getCategories($result['product_id']);
+				if ($categories) {
+					$category_info = $this->model_catalog_category->getCategory($categories[0]['category_id']);
+					if($category_info) {
+						$category_name = $category_info['name'];
+					}
+				}
+				
+				// Опции (Цвет)
+				$colors = array();
+				$options = $this->model_catalog_product->getProductOptions($result['product_id']);
+				foreach ($options as $option) {
+					if (strtolower($option['name']) == 'цвет' || strtolower($option['name']) == 'color') {
+						foreach ($option['product_option_value'] as $option_value) {
+							$color_name = $option_value['name'];
+							$color_code = '';
+							if (preg_match('/(#[\da-fA-F]{6})/', $color_name, $matches)) {
+								$color_code = $matches[1];
+								$color_name = trim(str_replace($matches[1], '', $color_name));
+							}
+							$colors[] = array(
+								'name' => $color_name,
+								'color_code' => $color_code
+							);
+						}
+					}
 				}
 
 				if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
@@ -48,6 +92,9 @@ class ControllerExtensionModuleBestSeller extends Controller {
 				$data['products'][] = array(
 					'product_id'  => $result['product_id'],
 					'thumb'       => $image,
+					'images'      => $images,
+					'category'    => $category_name,
+					'colors'      => $colors,
 					'name'        => $result['name'],
 					'description' => utf8_substr(trim(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8'))), 0, $this->config->get('theme_' . $this->config->get('config_theme') . '_product_description_length')) . '..',
 					'price'       => $price,

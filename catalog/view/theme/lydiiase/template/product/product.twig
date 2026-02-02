@@ -174,28 +174,49 @@
 				<div class="swiper-wrapper">
 					{% for product in recently_viewed_products %}
 						<div class="catalog_item swiper-slide">
-							<div class="catalog_item-slider">
-								<div class="catalog_item-slide">
-									<a href="{{ product.href }}">
-										<img src="{{ product.thumb }}" alt="{{ product.name }}">
-									</a>
+							<div class="catalog_item-slider swiper">
+								<div class="swiper-wrapper">
+									{% for image in product.images %}
+										<div class="catalog_item-slide swiper-slide">
+											<a href="{{ product.href }}"><img src="{{ image.thumb }}" alt="{{ product.name }}"></a>
+										</div>
+									{% endfor %}
 								</div>
+								<div class="catalog_item-pagination"></div>
 							</div>
-							<div class="catalog_item-title">
-								<a href="{{ product.href }}">{{ product.name }}</a>
-							</div>
+	
+							<a href="{{ product.href }}" class="catalog_item-title">{{ product.name }}</a>
+	
 							<div class="catalog_item-price">
 								{% if not product.special %}
 									{{ product.price }}
 								{% else %}
-									{{ product.special }}
+									<p>{{ product.special }}</p>
 									<span>{{ product.price }}</span>
 								{% endif %}
 							</div>
-							<div class="catalog_item-subtitle">{{ product.model }}</div>
-							<a href="javascript:void(0);" onclick="cart.add('{{ product.product_id }}');" class="catalog_item-btn btn">
+	
+							{% if product.category %}
+								<div class="catalog_item-subtitle">Категория: {{ product.category }}</div>
+							{% endif %}
+	
+							{% if product.colors %}
+								<div class="catalog_item-colors">
+									<div class="catalog_item-colors_title">Цвет:</div>
+									{% for color in product.colors %}
+										<div class="catalog_item-color" style="background: {{ color.color_code }};" title="{{ color.name }}"></div>
+									{% endfor %}
+								</div>
+							{% endif %}
+	
+							<button type="button" onclick="cart.add('{{ product.product_id }}');" class="catalog_item-btn btn">
 								В корзину
-							</a>
+								<svg width="27" height="32" viewbox="0 0 27 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M4.883 28.6889H21.2918C21.9703 28.6889 22.5224 28.1368 22.5224 27.4583V11.0495C22.5224 10.371 21.9703 9.81885 21.2918 9.81885H19.2407C19.0142 9.81885 18.8305 10.0026 18.8305 10.2291C18.8305 10.4555 19.0142 10.6393 19.2407 10.6393H21.2918C21.5174 10.6393 21.702 10.8231 21.702 11.0495V27.4583C21.702 27.6847 21.5174 27.8685 21.2918 27.8685H4.883C4.65738 27.8685 4.47278 27.6847 4.47278 27.4583V11.0495C4.47278 10.8231 4.65738 10.6393 4.883 10.6393H6.9341C7.16054 10.6393 7.34432 10.4555 7.34432 10.2291C7.34432 10.0026 7.16054 9.81885 6.9341 9.81885H4.883C4.2045 9.81885 3.65234 10.371 3.65234 11.0495V27.4583C3.65234 28.1368 4.2045 28.6889 4.883 28.6889Z" fill="black"/>
+									<path d="M8.98541 15.9457C9.21186 15.9457 9.39563 15.7619 9.39563 15.5355V9.59876C9.39563 7.44347 11.0521 5.69019 13.0876 5.69019C15.1231 5.69019 16.7796 7.44347 16.7796 9.59876V15.5355C16.7796 15.7619 16.9634 15.9457 17.1898 15.9457C17.4162 15.9457 17.6 15.7619 17.6 15.5355V9.59876C17.6 6.99141 15.5752 4.86975 13.0876 4.86975C10.6 4.86975 8.5752 6.99141 8.5752 9.59876V15.5355C8.5752 15.7619 8.75897 15.9457 8.98541 15.9457Z" fill="black"/>
+									<path d="M11.0362 9.81885C10.8098 9.81885 10.626 10.0026 10.626 10.2291C10.626 10.4555 10.8098 10.6393 11.0362 10.6393H15.1384C15.3648 10.6393 15.5486 10.4555 15.5486 10.2291C15.5486 10.0026 15.3648 9.81885 15.1384 9.81885H11.0362Z" fill="black"/>
+								</svg>
+							</button>
 						</div>
 					{% endfor %}
 				</div>
