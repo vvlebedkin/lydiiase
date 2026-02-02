@@ -47,17 +47,17 @@ class ControllerExtensionModuleBestSeller extends Controller {
 				$colors = array();
 				$options = $this->model_catalog_product->getProductOptions($result['product_id']);
 				foreach ($options as $option) {
-					if (strtolower($option['name']) == 'цвет' || strtolower($option['name']) == 'color') {
+					if (utf8_strtolower($option['name']) == 'цвет' || utf8_strtolower($option['name']) == 'color') {
 						foreach ($option['product_option_value'] as $option_value) {
-							$color_name = $option_value['name'];
-							$color_code = '';
-							if (preg_match('/(#[\da-fA-F]{6})/', $color_name, $matches)) {
-								$color_code = $matches[1];
-								$color_name = trim(str_replace($matches[1], '', $color_name));
+							$name = $option_value['name'];
+							$hex = '#ccc';
+							if (preg_match('/#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})/', $name, $matches)) {
+								$hex = $matches[0];
+								$name = trim(str_replace($hex, '', $name));
 							}
 							$colors[] = array(
-								'name' => $color_name,
-								'color_code' => $color_code
+								'name' => $name,
+								'color_code' => $hex
 							);
 						}
 					}
