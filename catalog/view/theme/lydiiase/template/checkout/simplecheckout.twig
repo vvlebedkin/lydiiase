@@ -168,87 +168,49 @@ simplecheckout_ {{ group }}.init();
 						{% endfor %}
 					{% endif %}
 
-					{%
-                    set replace = {
-                        '{three_column}'     : '<div class="simplecheckout-three-column">',
-                        '{/three_column}'    : '</div>',
-                        '{left_column}'      : '<div class="simplecheckout-left-column">',
-                        '{/left_column}'     : '</div>',
-                        '{right_column}'     : '<div class="simplecheckout-right-column">',
-                        '{/right_column}'    : '</div>',
-                        '{step}'             : '<div class="simplecheckout-step">',
-                        '{/step}'            : '</div>',
-                        '{clear_both}'       : '<div style="width:100%;clear:both;height:1px"></div>',
-                        '{customer}'         : simple_blocks['customer'],
-                        '{payment_address}'  : simple_blocks['payment_address'],
-                        '{shipping_address}' : simple_blocks['shipping_address'],
-                        '{cart}'             : simple_blocks['cart'],
-                        '{shipping}'         : simple_blocks['shipping'],
-                        '{payment}'          : simple_blocks['payment'],
-                        '{agreement}'        : simple_blocks['agreement'],
-                        '{help}'             : simple_blocks['help'],
-                        '{summary}'          : simple_blocks['summary'],
-                        '{comment}'          : simple_blocks['comment'],
-                        '{payment_form}'     : '<div class="simplecheckout-block" id="simplecheckout_payment_form">' ~ simple_blocks['payment_form'] ~ '</div>'
-                    }
-                %}
+					<div class="cart_wrapper">
+    <div class="cart_items">
+        {{ simple_blocks['cart'] }}
+    </div>
+    <div class="cart_right">
+        {{ simple_blocks['summary'] }}
+    </div>
+</div>
 
-					{% for key, value in simple_blocks %}
-						{% set key_clear = key %}
-						{% set key = '{' ~ key ~ '}' %}
-						{% if replace[key] is not defined %}
-							{% set replace = replace|merge({(key): '<div class="simplecheckout-block" id="' ~ key_clear ~ '">' ~ value ~ '</div>'}) %}
-						{% endif %}
-					{% endfor %}
+<form action="" class="cart_form">
+    <div class="cart_title">Данные покупателя</div>
+    {{ simple_blocks['customer'] }}
+    
+    <div class="cart_title">Способ доставки</div>
+    {{ simple_blocks['shipping'] }}
 
-					{{ simple_template|replace(replace) }}
+    <div class="cart_title">Способ оплаты</div>
+    {{ simple_blocks['payment'] }}
 
-					<div id="simplecheckout_bottom" style="width:100%;height:1px;clear:both;"></div>
-					<div class="simplecheckout-proceed-payment" id="simplecheckout_proceed_payment" style="display:none;">{{ text_proceed_payment }}</div>
+    <div id="simplecheckout_payment_form">{{ simple_blocks['payment_form'] }}</div>
 
-					{% if display_agreement_checkbox %}
-						<div class="alert alert-danger simplecheckout-warning-block" id="agreement_warning" {% if display_error and has_error %} data-error="true" {% else %} style="display:none;" {% endif %}>
-							<div class="agreement_all">
-								{% for agreement_id, warning_agreement in error_warning_agreement %}
-									<div class="agreement_{{ agreement_id }}">{{ warning_agreement }}</div>
-								{% endfor %}
-							</div>
-						</div>
-					{% endif %}
+    <div class="cart_title">Комментарий</div>
+    {{ simple_blocks['comment'] }}
 
-					<div class="simplecheckout-button-block buttons" id="buttons">
-						<div class="simplecheckout-button-right">
-							{% if display_agreement_checkbox %}
-								<span id="agreement_checkbox">
-									{% for agreement_id, text_agreement in text_agreements %}
-										<div class="checkbox">
-											<label><input type="checkbox" name="agreements[]" value="{{ agreement_id }}" {{ agreement_id in agreements ? 'checked="checked"' : '' }}/>{{ text_agreement }}</label>
-										</div>
-									{% endfor %}
-								</span>
-							{% endif %}
-							{% if steps_count > 1 %}
-								<a class="button btn-primary button_oc btn" data-onclick="nextStep" id="simplecheckout_button_next">
-									<span>{{ button_next }}</span>
-								</a>
-							{% endif %}
-							<a class="button btn-primary button_oc btn" {{ block_order ? 'disabled' : ''}} data-onclick="createOrder" id="simplecheckout_button_confirm">
-								<span>{{ button_order }}</span>
-							</a>
-						</div>
-						<div class="simplecheckout-button-left">
-							{% if display_back_button %}
-								<a class="button btn-primary button_oc btn" data-onclick="backHistory" id="simplecheckout_button_back">
-									<span>{{ button_back }}</span>
-								</a>
-							{% endif %}
-							{% if steps_count > 1 %}
-								<a class="button btn-primary button_oc btn" data-onclick="previousStep" id="simplecheckout_button_prev">
-									<span>{{ button_prev }}</span>
-								</a>
-							{% endif %}
-						</div>
-					</div>
+    {{ simple_blocks['agreement'] }}
+
+    <button class="cart_form-btn btn" data-onclick="createOrder" id="simplecheckout_button_confirm"><span>Оформить заказ</span></button>
+</form>
+
+<div id="simplecheckout_bottom" style="width:100%;height:1px;clear:both;"></div>
+<div class="simplecheckout-proceed-payment" id="simplecheckout_proceed_payment" style="display:none;">{{ text_proceed_payment }}</div>
+
+{% if display_agreement_checkbox %}
+    <div class="alert alert-danger simplecheckout-warning-block" id="agreement_warning" {% if display_error and has_error %} data-error="true" {% else %} style="display:none;" {% endif %}>
+        <div class="agreement_all">
+            {% for agreement_id, warning_agreement in error_warning_agreement %}
+                <div class="agreement_{{ agreement_id }}">{{ warning_agreement }}</div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
+
 
 					{% if steps_count > 1 and menu_type == '2' %}
 					</div>
