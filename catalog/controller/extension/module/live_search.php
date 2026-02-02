@@ -44,6 +44,37 @@ class ControllerExtensionModuleLiveSearch extends Controller
                     }
                 }
 
+                // --- Получаем цвета и вытаскиваем HEX-код ---
+                $colors = array();
+                $product_options = $this->model_catalog_product->getProductOptions($result['product_id']);
+
+                foreach ($product_options as $option) {
+                    // Проверяем, что это опция "Цвет"
+                    if (utf8_strtolower($option['name']) == 'цвет') {
+                        foreach ($option['product_option_value'] as $option_value) {
+                            $raw_name = $option_value['name'];
+                            $color_code = '#ccc'; // По умолчанию
+                            $color_name = $raw_name;
+
+                            if (strpos($raw_name, '|') !== false) {
+                                // Если есть разделитель, разбиваем строку
+                                $parts = explode('|', $raw_name);
+                                $color_code = trim($parts[0]);
+                                $color_name = trim($parts[1]);
+                            } elseif (preg_match('/#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})/', $raw_name, $matches)) {
+                                // Если разделителя нет, но есть HEX-код (старая схема)
+                                $color_code = $matches[0];
+                                $color_name = trim(str_replace($color_code, '', $raw_name));
+                            }
+
+                            $colors[] = array(
+                                'name'       => $color_name,
+                                'color_code' => $color_code
+                            );
+                        }
+                    }
+                }
+
                 $json[] = [
                     'name'     => $result['name'],
                     'price'    => $price,
@@ -51,6 +82,7 @@ class ControllerExtensionModuleLiveSearch extends Controller
                     'category' => $category_name,
                     'image'    => $image,
                     'href'     => $this->url->link('product/product', 'product_id=' . $result['product_id']),
+                    'colors'   => $colors, // Добавляем цвета в JSON
                 ];
             }
         }

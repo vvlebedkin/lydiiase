@@ -192,6 +192,18 @@ $(document).ready(function () {
 
         if (json.length > 0) {
           $.each(json, function (i, product) {
+            // --- Динамическая генерация блока цветов ---
+            var colorsHtml = '';
+            if (product.colors && product.colors.length > 0) {
+                colorsHtml += '<div class="catalog_item-colors">';
+                colorsHtml += '<div class="catalog_item-colors_title">Цвет:</div>';
+                $.each(product.colors, function(ci, color) {
+                    // Здесь могут быть дополнительные стили для светлых цветов, как в примере, но пока просто цвет
+                    colorsHtml += `<div class="catalog_item-color" style="background: ${color.color_code};"></div>`;
+                });
+                colorsHtml += '</div>';
+            }
+
             // Формируем блок цены со скидкой, если она есть
             var priceHtml = product.special
               ? `${product.price} <span>${product.special}</span>`
@@ -206,12 +218,7 @@ $(document).ready(function () {
                                     <div class="catalog_item-title">${product.name}</div>
                                     <div class="catalog_item-price">${priceHtml}</div>
                                     <div class="catalog_item-subtitle">Категория: ${product.category}</div>
-                                    <div class="catalog_item-colors">
-                                        <div class="catalog_item-colors_title">Цвет:</div>
-                                        <div class="catalog_item-color" style="background: #000000;"></div>
-                                        <div class="catalog_item-color" style="background: #62381C66; border: 1px solid #62381C"></div>
-                                        <div class="catalog_item-color" style="background: #47581B66; border: 1px solid #47581B"></div>
-                                    </div>
+                                    ${colorsHtml}
                                 </div>
                             </a>`;
             $searchItems.append(itemHtml);
