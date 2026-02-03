@@ -1,6 +1,10 @@
 <div
 	class="simplecheckout-block" id="simplecheckout_shipping" {{ hide ? 'data-hide="true"' : '' }} {{ display_error and has_error ? 'data-error="true"' : '' }}>
 
+	{# Заголовок блока, если включен в настройках #}
+	{% if display_header %}
+		<div class="checkout-heading panel-heading">{{ text_checkout_shipping_method }}</div>
+	{% endif %}
 
 	{# Предупреждение об ошибке доставки #}
 	<div class="alert alert-danger simplecheckout-warning-block" {{ display_error and has_error_shipping ? '' : 'style="display:none"' }}>{{ error_shipping }}</div>
@@ -49,7 +53,7 @@
 			{% else %}
 				{# 
 				                    Новый дизайн для радио-кнопок в стиле cart.html.
-				                    Заголовок группы берется из shipping_method.title, а подзаголовок из quote.title
+				                    Убран заголовок группы методов доставки.
 				                #}
 				{% for shipping_method in shipping_methods %}
 					{% if shipping_method['warning'] is not empty %}
@@ -62,14 +66,10 @@
 								<input type="radio" data-onchange="reloadAll" name="shipping_method" value="{{ quote['code'] }}" id="{{ quote['code'] }}" {% if quote['code'] == code %} checked="checked" {% endif %}/>
 								<span></span>
 								<div class="cart_check-info">
-									<div class="cart_check-title">{{ shipping_method['title'] }}</div>
-									<div class="cart_check-sbutitle">
-										{{ quote['title'] }}
-										{% if quote['description'] is not empty and quote['description'] != quote['title'] %}
-											<br>
-											{{ quote['description'] }}
-										{% endif %}
-									</div>
+									<div class="cart_check-title">{{ quote['title'] }}</div>
+									{% if quote['description'] is not empty %}
+										<div class="cart_check-subtitle">{{ quote['description'] }}</div>
+									{% endif %}
 								</div>
 								{% if quote['text'] is not empty %}
 									<div class="cart_check-price">{{ quote['text'] }}</div>
