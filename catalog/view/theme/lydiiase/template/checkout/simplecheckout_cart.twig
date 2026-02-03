@@ -37,10 +37,10 @@
                     <div class="cart_item-option reward">{{ product['reward'] }}</div>
                 {% endif %}
             </div>
-            <div class="cart_item-counter">
-                <button class="btn-dec" data-onclick="decreaseProductQuantity" type="button">-</button>
-                <input type="text" name="quantity[{{ product['cart_id'] is not empty ? product['cart_id'] : product['key'] }}]" value="{{ product['quantity'] }}" data-onchange="changeProductQuantity" {{ quantity_step_as_minimum ? 'data-minimum="' ~ product['minimum'] ~ '"' : '' }}>
-                <button class="btn-inc" data-onclick="increaseProductQuantity" type="button">+</button>
+            <div class="cart_item-counter counter">
+                <span class="count-arrow count-arrow-minus" data-onclick="decreaseProductQuantity">-</span>
+                <input class="count-inp" type="text" name="quantity[{{ product['cart_id'] is not empty ? product['cart_id'] : product['key'] }}]" value="{{ product['quantity'] }}" data-onchange="changeProductQuantity">
+                <span class="count-arrow count-arrow-plus" data-onclick="increaseProductQuantity">+</span>
             </div>
             <div class="cart_item-price">
                 {{ product['price'] }}
