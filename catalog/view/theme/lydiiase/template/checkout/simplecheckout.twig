@@ -70,16 +70,16 @@ $("head").append('<link href="' + '{{ style }}' + '" rel="stylesheet"/>');{% end
 }
 }, 0);{% endif %}
 
-var startSimpleInterval_ {{ group }} = window.setInterval(function () {
+var startSimpleInterval_{{ group }} = window.setInterval(function () {
 if (typeof jQuery !== 'undefined' && typeof Simplecheckout === "function" && jQuery.isReady) {
-window.clearInterval(startSimpleInterval_ {{ group }});
+window.clearInterval(startSimpleInterval_{{ group }});
 
-var simplecheckout_ {{ group }} = new Simplecheckout({
+var simplecheckout_{{ group }} = new Simplecheckout({
 mainRoute: "checkout/simplecheckout",
 additionalParams: "{{ additional_params }}",
 additionalPath: "{{ additional_path }}",
 mainUrl: "{{ action }}",
-mainContainer: "#simplecheckout_form_ {{ group }}",
+mainContainer: "#simplecheckout_form_{{ group }}",
 currentTheme: "{{ current_theme }}",
 loginBoxBefore: "{{ login_type == 'flat' ? '#simplecheckout_customer .simplecheckout-block-content:first' : '' }}",
 displayProceedText: {{ display_proceed_text ? 1 : 0 }},
@@ -115,7 +115,7 @@ toastr.options.progressBar = true;
 $(document).ajaxComplete(function (e, xhr, settings) {
 if (settings.url.indexOf("route=module/cart&remove") > 0 || (settings.url.indexOf("route=module/cart") > 0 && settings.type == "POST") || settings.url.indexOf("route=checkout/cart/add") > 0 || settings.url.indexOf("route=checkout/cart/remove") > 0) {
 window.resetSimpleQuantity = true;
-simplecheckout_ {{ group }}.reloadAll();
+simplecheckout_{{ group }}.reloadAll();
 }
 });
 
@@ -126,7 +126,7 @@ window.resetSimpleQuantity = false;
 }
 });
 
-simplecheckout_ {{ group }}.init();
+simplecheckout_{{ group }}.init();
 
 }
 }, 0);
