@@ -2283,7 +2283,11 @@ ul {
 
 .cart_item-title {
     font-size: 22px;
+    font-size: 22px;
     margin-bottom: 14px;
+}
+.cart_item-title a {
+    color: inherit;
 }
 
 .cart_item-option {
