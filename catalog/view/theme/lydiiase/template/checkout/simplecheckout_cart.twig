@@ -79,43 +79,6 @@
     {% endfor %}
 </div>
 
-{% for total in totals %}
-    <div class="simplecheckout-cart-total" id="total_{{ total['code'] }}">
-        <span><b>{{ total['title'] }}:</b></span>
-        <span class="simplecheckout-cart-total-value">{{ total['text'] }}</span>
-        <span class="simplecheckout-cart-total-remove">
-            {% if total['code'] == 'coupon' %}
-                <i data-onclick="removeCoupon" title="{{ button_remove }}" class="fa fa-times-circle"></i>
-            {% endif %}
-            {% if total['code'] == 'voucher' %}
-                <i data-onclick="removeVoucher" title="{{ button_remove }}" class="fa fa-times-circle"></i>
-            {% endif %}
-            {% if total['code'] == 'reward' %}
-                <i data-onclick="removeReward" title="{{ button_remove }}" class="fa fa-times-circle"></i>
-            {% endif %}
-        </span>
-    </div>
-{% endfor %}
-{% if modules['coupon'] is defined %}
-    <div class="simplecheckout-cart-total">
-        <span class="inputs">{{ entry_coupon }}&nbsp;<input class="form-control" type="text" data-onchange="reloadAll" name="coupon" value="{{ coupon }}" /></span>
-    </div>
-{% endif %}
-{% if modules['reward'] is defined and points > 0 %}
-    <div class="simplecheckout-cart-total">
-        <span class="inputs">{{ entry_reward }}&nbsp;<input class="form-control" type="text" name="reward" data-onchange="reloadAll" value="{{ reward }}" /></span>
-    </div>
-{% endif %}
-{% if modules['voucher'] is defined %}
-    <div class="simplecheckout-cart-total">
-        <span class="inputs">{{ entry_voucher }}&nbsp;<input class="form-control" type="text" name="voucher" data-onchange="reloadAll" value="{{ voucher }}" /></span>
-    </div>
-{% endif %}
-{% if modules['coupon'] is defined or (modules['reward'] is defined and points > 0) or modules['voucher'] is defined %}
-    <div class="simplecheckout-cart-total simplecheckout-cart-buttons">
-        <span class="inputs buttons"><a id="simplecheckout_button_cart" data-onclick="reloadAll" class="button btn-primary button_oc btn"><span>{{ button_update }}</span></a></span>
-    </div>
-{% endif %}
 <input type="hidden" name="remove" value="" id="simplecheckout_remove">
 <div style="display:none;" id="simplecheckout_cart_total">{{ cart_total }}</div>
 {% if display_weight %}
