@@ -123,6 +123,15 @@ class ControllerCommonHeader extends Controller
         $data['about']    = $this->url->link('information/about');                           // Пример ID для "О компании"
         $data['delivery'] = $this->url->link('information/information', 'information_id=6'); // Пример ID для "Оплата и доставка"
 
+        // Бегущая строка из настроек
+        $comment = $this->config->get('config_comment');
+        if (!empty($comment)) {
+            $phrases = explode('|', $comment);
+            $data['top_lines_phrases'] = array_map('trim', $phrases);
+        } else {
+            $data['top_lines_phrases'] = [];
+        }
+
         return $this->load->view('common/header', $data);
     }
 }

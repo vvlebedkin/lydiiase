@@ -44,20 +44,20 @@
 																						    </div> #}
 
 		{# Бегущая строка #}
-			<div class="top_lines-wrapper"> <div class="top_lines">
-				<div
-					class="top_lines-row">
-					{# Делаем цикл на 8 повторений одной фразы #}
-					{% set promo_text = "Бесплатная доставка при заказе от 4000 рублей" %}
-					{% for i in 1..8 %}
-						<div class="top_line">{{ promo_text }}</div>
-					{% endfor %}
+		{% if top_lines_phrases %}
+			<div class="top_lines-wrapper">
+				<div class="top_lines">
+					<div class="top_lines-row">
+						{% for phrase in top_lines_phrases %}
+							<div class="top_line">{{ phrase }}</div>
+						{% endfor %}
+					</div>
+				</div>
+				<div class="top_lines-close">
+					<img src="catalog/view/theme/lydiiase/assets/img/close.svg" alt="close">
 				</div>
 			</div>
-			<div class="top_lines-close">
-				<img src="catalog/view/theme/lydiiase/assets/img/close.svg" alt="close">
-			</div>
-		</div>
+		{% endif %}
 
 		<header class="header">
 			<div class="container">
