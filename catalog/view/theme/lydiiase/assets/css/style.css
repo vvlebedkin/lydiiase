@@ -3954,3 +3954,10 @@ div:has(>.cart_inp):last-child {
 .simplecheckout-block-content {
   padding: 0 !important
 }
+.cart-breadcrumbs .crumb:nth-of-type(2){
+    display: none;
+}
+.simplecheckout label.form_ok{
+    display: block !important;
+    margin-bottom: 24px;
+}
