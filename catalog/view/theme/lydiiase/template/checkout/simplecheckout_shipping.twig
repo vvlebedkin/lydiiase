@@ -51,45 +51,39 @@
 					{% endif %}
 				{% endif %}
 			{% else %}
-				{# 
-				                    Новый дизайн для радио-кнопок в стиле cart.html.
-				                    Убран заголовок группы методов доставки.
-				                #}
-				{% for shipping_method in shipping_methods %}
-					{% if shipping_method['warning'] is not empty %}
-						<div class="simplecheckout-error-text">{{ shipping_method['warning'] }}</div>
-					{% endif %}
-
-					{% if shipping_method['error'] is empty %}
-						{% for quote in shipping_method['quote'] %}
-							<label class="cart_check">
-								<input type="radio" data-onchange="reloadAll" name="shipping_method" value="{{ quote['code'] }}" id="{{ quote['code'] }}" {% if quote['code'] == code %} checked="checked" {% endif %}/>
-								<span></span>
-								<div class="cart_check-info">
-									<div class="cart_check-title">{{ quote['title'] }}</div>
-									{% if quote['description'] is not empty %}
-										<div class="cart_check-subtitle">{{ quote['description'] }}</div>
-									{% endif %}
-								</div>
-								{% if quote['text'] is not empty %}
-									<div class="cart_check-price">{{ quote['text'] }}</div>
-								{% endif %}
-							</label>
-
-							{# Дополнительные поля для выбранного метода доставки, если они есть #}
-							{% if quote['code'] == code and rows is not empty %}
-								<div class="simple-shipping-additional-rows">
-									{% for row in rows %}
-										{{ row }}
-									{% endfor %}
-								</div>
-							{% endif %}
-						{% endfor %}
-					{% else %}
-						<div class="simplecheckout-error-text">{{ shipping_method['error'] }}</div>
-					{% endif %}
-				{% endfor %}
-
+				<div class="cart_inner">
+                    {% for shipping_method in shipping_methods %}
+                        {% if shipping_method['warning'] is not empty %}
+                            <div class="simplecheckout-error-text">{{ shipping_method['warning'] }}</div>
+                        {% endif %}
+                        {% if shipping_method['error'] is empty %}
+                            {% for quote in shipping_method['quote'] %}
+                                <label class="cart_check">
+                                    <input type="radio" data-onchange="reloadAll" name="shipping_method" value="{{ quote['code'] }}" id="{{ quote['code'] }}" {% if quote['code'] == code %} checked="checked" {% endif %}/>
+                                    <span></span>
+                                    <div class="cart_check-info">
+                                        <div class="cart_check-title">{{ shipping_method['title'] }}</div>
+                                        <div class="cart_check-sbutitle">{{ quote['title'] }}</div>
+                                    </div>
+                                    {% if quote['text'] is not empty %}
+                                        <div class="cart_check-price">{{ quote['text'] }}</div>
+                                    {% endif %}
+                                </label>
+                                {# Дополнительные поля для выбранного метода доставки, если они есть #}
+                                {% if quote['code'] == code and rows is not empty %}
+                                    <div class="simple-shipping-additional-rows">
+                                        {% for row in rows %}
+                                            {{ row }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <div class="simplecheckout-error-text">{{ shipping_method['error'] }}</div>
+                        {% endif %}
+                    {% endfor %}
+                    <div class="cart_inner-desc">Точная стоимость уточняется при формировании заказа</div>
+                </div>
 			{% endif %}
 
 			{# Скрытые поля для работы SimpleCheckout. Обязательно сохранить. #}
