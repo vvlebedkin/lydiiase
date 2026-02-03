@@ -74,6 +74,10 @@ class ControllerInformationContact extends Controller {
 		$data['geocode'] = $this->config->get('config_geocode');
 		$data['geocode_hl'] = $this->config->get('config_language');
 		$data['telephone'] = $this->config->get('config_telephone');
+		$data['email'] = $this->config->get('config_email');
+		$data['email2'] = $this->config->get('config_email2');
+		$data['social_tg'] = $this->config->get('config_social_tg');
+		$data['social_inst'] = $this->config->get('config_social_inst');
 		$data['fax'] = $this->config->get('config_fax');
 		$data['open'] = nl2br($this->config->get('config_open'));
 		$data['comment'] = $this->config->get('config_comment');
