@@ -117,7 +117,7 @@ class ControllerCommonHeader extends Controller
         $data['cart']     = $this->load->controller('common/cart');
         $data['menu']     = $this->load->controller('common/menu');
 
-        $data['special'] = $this->url->link('product/special'); // Ссылка на акции (часто используется для SALE/Новинок)
+        $data['novinki'] = $this->url->link('information/news'); // Ссылка на акции (часто используется для SALE/Новинок)
 
 // Ссылки на статьи (ID нужно проверить в админке: Каталог -> Статьи)
         $data['about']    = $this->url->link('information/about');                           // Пример ID для "О компании"
