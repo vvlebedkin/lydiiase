@@ -3943,3 +3943,11 @@ div:has(>.cart_inp):last-child {
         width: 100%;
     }
 }
+
+.simple-content fieldset{
+    border: none;
+}
+.cart_promo-wrapper button{
+    margin-top: 16px;
+    width: 100%;
+}
