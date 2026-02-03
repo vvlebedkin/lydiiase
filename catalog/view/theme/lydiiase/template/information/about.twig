@@ -1,0 +1,25 @@
+{{ header }}
+<section class="page_default">
+	<div class="container">
+		<div class="crumbs">
+			{% for breadcrumb in breadcrumbs %}
+				{% if loop.last %}
+					<div class="crumb">{{ breadcrumb.text }}</div>
+				{% else %}
+					<a href="{{ breadcrumb.href }}" class="crumb">{{ breadcrumb.text }}</a>
+				{% endif %}
+			{% endfor %}
+		</div>
+		<h1 class="mobile_title">{{ heading_title }}</h1>
+	</div>
+
+	{# Позиция для верхнего баннера (Hero-секции) #}
+	{{ content_top }}
+
+	<div class="container">
+		<div class="about_items">
+			{{ content_bottom }}
+		</div>
+	</div>
+</section>
+{{ footer }}

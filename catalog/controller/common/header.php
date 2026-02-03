@@ -120,7 +120,7 @@ class ControllerCommonHeader extends Controller
         $data['special'] = $this->url->link('product/special'); // Ссылка на акции (часто используется для SALE/Новинок)
 
 // Ссылки на статьи (ID нужно проверить в админке: Каталог -> Статьи)
-        $data['about']    = $this->url->link('information/information', 'information_id=4'); // Пример ID для "О компании"
+        $data['about']    = $this->url->link('information/about');                           // Пример ID для "О компании"
         $data['delivery'] = $this->url->link('information/information', 'information_id=6'); // Пример ID для "Оплата и доставка"
 
         return $this->load->view('common/header', $data);
