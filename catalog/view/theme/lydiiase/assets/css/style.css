@@ -2473,8 +2473,8 @@ div:has(>.cart_inp):last-child {
     margin-bottom: 0;
 }
 
-.cart_check {
-    display: flex;
+.simplecheckout label.cart_check {
+    display: flex !important;
     justify-content: space-between;
     cursor: pointer;
     padding-left: 58px;
@@ -3950,4 +3950,7 @@ div:has(>.cart_inp):last-child {
 .cart_promo-wrapper button{
     margin-top: 16px;
     width: 100%;
+}
+.simplecheckout-block-content {
+  padding: 0 !important
 }

@@ -177,7 +177,7 @@ simplecheckout_{{ group }}.init();
     </div>
 </div>
 
-<form action="" class="cart_form">
+<div class="cart_form">
     <div class="cart_title">Данные покупателя</div>
     {{ simple_blocks['customer'] }}
     
@@ -194,8 +194,8 @@ simplecheckout_{{ group }}.init();
 
     {{ simple_blocks['agreement'] }}
 
-    <button class="cart_form-btn btn" data-onclick="createOrder" id="simplecheckout_button_confirm"><span>Оформить заказ</span></button>
-</form>
+    <button type="button" class="cart_form-btn btn" data-onclick="createOrder" id="simplecheckout_button_confirm"><span>Оформить заказ</span></button>
+</div>
 
 <div id="simplecheckout_bottom" style="width:100%;height:1px;clear:both;"></div>
 <div class="simplecheckout-proceed-payment" id="simplecheckout_proceed_payment" style="display:none;">{{ text_proceed_payment }}</div>
