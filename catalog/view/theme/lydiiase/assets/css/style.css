@@ -739,8 +739,12 @@ ul {
     display: flex;
     align-items: center;
     margin-bottom: 14px;
+    color: #000;
+}
+.catalog_item-price:has(span) {
     color: #991D5B;
 }
+
 
 .catalog_item-price span {
     font-size: 18px;
@@ -3964,4 +3968,72 @@ div:has(>.cart_inp):last-child {
 .simplecheckout label.form_ok{
     display: block !important;
     margin-bottom: 24px;
+}
+
+.cookies {
+  position: fixed;
+  z-index: 100;
+  bottom: 30px;
+  background: #F5F5F5;
+  box-shadow: 0px 4px 7px rgba(0, 0, 0, 0.45), 0px 10px 25px rgba(0, 0, 0, 0.25), 0px 15px 45px rgba(0, 0, 0, 0.15);
+  border-radius: 24px;
+  width: 770px;
+  right: 50%;
+  transform: translateX(50%);
+  display: flex;
+  justify-content: space-between;
+  padding: 30px 70px;
+  max-width: 100%;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .6s; 
+}
+
+.cookies.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.cookies_text {
+  width: 480px;
+  font-size: 15px;
+  color: #615E69;
+  line-height: 26px;
+}
+
+.cookies_text a {
+  color: #991D5B;
+}
+
+.cookies_btn {
+  height: 52px;
+  width: 130px;
+  /*background: #FD0056;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 22px;*/
+}
+
+@media (max-width: 767.98px) {
+  .cookies {
+    padding: 15px 20px;
+  }
+  .cookies_btn {
+    font-size: 14px;
+    padding: 0 12px;
+    margin-left: 8px;
+  }
+  .cookies_text {
+    font-size: 14px;
+    line-height: 18px;
+  }
 }

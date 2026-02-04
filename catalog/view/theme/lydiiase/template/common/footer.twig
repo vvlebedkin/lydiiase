@@ -100,6 +100,16 @@
 	</div>
 </footer>
 
+<div class="cookies cookie_notice">
+	<div class="cookies_text">
+
+		Мы используем файлы cookie для вашего удобства пользования сайтом и повышения качества рекомендаций.
+		<a href="/privacy">Подробнее</a>
+
+	</div>
+	<div id="cookie_close" class="cookies_btn btn">Принимаю</div>
+</div>
+
 {# ПОДКЛЮЧЕНИЕ СКРИПТОВ #}
 
 {# 1. Твои библиотеки #}
@@ -112,4 +122,24 @@
 {# 3. Системные скрипты OpenCart (модули, плагины, аналитика) #}
 {% for script in scripts %}
 	<script src="{{ script }}" type="text/javascript"></script>
-{% endfor %}</body></html>
+{% endfor %}</body></html><script>// функция возвращает cookie с именем name, если есть, если нет, то undefined
+function getCookie(name) {
+let matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
+return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+let cookiecook = getCookie("cookiecook"),
+cookiewin = document.getElementsByClassName('cookie_notice')[0];
+// проверяем, есть ли у нас cookie, с которой мы не показываем окно и если нет, запускаем показ
+if (cookiecook != "no") {
+// показываем
+// cookiewin.style.display="block";
+cookiewin.classList.add("active");
+// закрываем по клику
+document.getElementById("cookie_close").addEventListener("click", function () { // cookiewin.style.display="none";
+cookiewin.classList.remove("active");
+// записываем cookie на 1 день, с которой мы не показываем окно
+let date = new Date;
+date.setDate(date.getDate() + 1);
+document.cookie = "cookiecook=no; path=/; expires=" + date.toUTCString();
+});
+}</script>
