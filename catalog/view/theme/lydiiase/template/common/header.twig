@@ -39,13 +39,14 @@
 
 	<body>
 
-		{# <div class="loader_body">
-																								        <span class="loader"></span>
-																								    </div> #}
+		<div class="loader_body">
+			<span class="loader"></span>
+		</div>
 
 		{# Бегущая строка #}
-			{% if top_lines_phrases %}
-				<div class="top_lines-wrapper"> <div class="top_lines">
+		{% if top_lines_phrases %}
+			<div class="top_lines-wrapper">
+				<div class="top_lines">
 					<div class="top_lines-row">
 						{% for phrase in top_lines_phrases %}
 							<div class="top_line">{{ phrase }}</div>

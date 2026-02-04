@@ -4,7 +4,7 @@
 			<div class="bestsellers_top">
 				<h2 class="title">{{ heading_title }}</h2>
 				{# В стандартном модуле нет ссылки "Смотреть все", можно прописать её вручную на страницу акций или категорию #}
-				<a href="{{ all_bestsellers_link|default('#') }}" class="bestsellers_link">
+				<a href="/shop" class="bestsellers_link">
 					Смотреть все
 					<img src="catalog/view/theme/lydiiase/assets/img/link.svg" alt="">
 				</a>
@@ -35,7 +35,8 @@
 						</div>
 
 						{% if product.category %}
-							<div class="catalog_item-subtitle">Категория: {{ product.category }}</div>
+							<div class="catalog_item-subtitle">Категория:
+								{{ product.category }}</div>
 						{% endif %}
 
 						{% if product.colors %}

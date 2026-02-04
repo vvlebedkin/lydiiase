@@ -151,10 +151,7 @@
 				{# Чтобы пагинация OpenCart (ul.pagination) выглядела как твоя (.pagin), 
 																                   мы можем либо изменить PHP-класс пагинации, либо использовать фильтр замены: #}
 				<div class="pagination_wrapper">
-					{{ pagination|replace({
-                        'pagination': 'pagin',
-                        'active': 'active'
-                    })|raw }}
+					{{ pagination }}
 				</div>
 			</div>
 		</div>
