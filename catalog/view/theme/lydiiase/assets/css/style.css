@@ -1771,6 +1771,10 @@ ul {
 .catalog_items .catalog_item {
     width: calc(33.333% - 14.666px);
 }
+.catalog_items.search_grid .catalog_item {
+    width: calc(25% - 20px);
+}
+ 
 
 .catalog_items .catalog_item-btn,
 .catalog_items .catalog_item-subtitle,
@@ -4092,4 +4096,38 @@ div:has(>.cart_inp):last-child {
 }
 .catalog_aside .bf-attr-header{
     border-top: none;
+}
+
+/* Убираем сетку с сайдбаром для страницы поиска */
+.catalog_wrapper--search {
+    display: block; /* Вместо grid, так как aside нет */
+}
+
+.catalog_wrapper--search .catalog_content {
+    width: 100%;
+}
+
+/* Сетка поиска: 4 колонки на десктопе */
+.search_grid {
+    
+}
+
+/* Адаптивность */
+@media (max-width: 1200px) {
+    .search_grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .search_grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .search_grid {
+        grid-template-columns: 1fr;
+    }
 }
