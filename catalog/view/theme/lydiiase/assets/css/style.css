@@ -4131,3 +4131,30 @@ div:has(>.cart_inp):last-child {
         grid-template-columns: 1fr;
     }
 }
+
+/* Позиционируем накладку */
+.catalog_item-slider {
+    position: relative; 
+    cursor: pointer; /* Добавляем курсор-руку, чтобы пользователь понимал, что можно кликнуть */
+}
+
+.catalog_item-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5; /* Поднимаем выше слайдов (обычно у них z-index: 1) */
+    display: block;
+}
+
+/* Пагинация должна быть ВЫШЕ ссылки, чтобы работать */
+.catalog_item-pagination {
+    z-index: 10; /* Сделаем выше ссылки */
+    pointer-events: none; /* Пропускаем клики сквозь контейнер пагинации */
+}
+
+/* Возвращаем кликабельность самим точкам */
+.catalog_item-pagination .swiper-pagination-bullet {
+    pointer-events: auto;
+}

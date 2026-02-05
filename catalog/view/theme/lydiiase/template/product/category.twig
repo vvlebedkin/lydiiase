@@ -66,10 +66,11 @@
 							class="catalog_item">
 							{# Слайдер внутри карточки #}
 							<div class="catalog_item-slider swiper">
+								<a href="{{ product.href }}" class="catalog_item-link"></a>
 								<div class="swiper-wrapper">
 									{% for image in product.images %}
 										<div class="catalog_item-slide swiper-slide">
-											<a href="{{ product.href }}"><img src="{{ image }}" alt="{{ product.name }}"></a>
+											<img src="{{ image }}" alt="{{ product.name }}">
 										</div>
 									{% endfor %}
 								</div>

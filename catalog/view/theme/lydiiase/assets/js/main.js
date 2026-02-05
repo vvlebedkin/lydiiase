@@ -43,6 +43,41 @@ $(document).ready(function () {
     },
   });
 
+  // function initCatalogSlider(containerClass) {
+  //   const slider = new Swiper(containerClass, {
+  //     pagination: {
+  //       el: containerClass + " .catalog_item-pagination",
+  //       clickable: true,
+  //     },
+  //     effect: "fade",
+  //     fadeEffect: {
+  //       crossFade: true,
+  //     },
+  //   });
+
+  //   const paginationContainer = document.querySelector(
+  //     containerClass + " .catalog_item-pagination",
+  //   );
+
+  //   if (paginationContainer) {
+  //     paginationContainer.addEventListener("mouseover", (e) => {
+  //       const bullet = e.target.closest(".swiper-pagination-bullet");
+  //       if (!bullet) return;
+
+  //       const allBullets = paginationContainer.querySelectorAll(
+  //         ".swiper-pagination-bullet",
+  //       );
+  //       const index = Array.from(allBullets).indexOf(bullet);
+
+  //       if (index !== -1) {
+  //         slider.slideTo(index);
+  //       }
+  //     });
+  //   }
+
+  //   return slider;
+  // }
+
   function initCatalogSlider(containerClass) {
     const slider = new Swiper(containerClass, {
       pagination: {
@@ -53,27 +88,52 @@ $(document).ready(function () {
       fadeEffect: {
         crossFade: true,
       },
+      preventClicks: false,
+      preventClicksPropagation: false,
+      touchStartPreventDefault: false,
+
+      on: {
+        init: function () {
+          const swiper = this;
+
+          // --- ИСПРАВЛЕНИЕ: Смена слайда при наведении ---
+          // Вместо trigger('click') используем swiper.slideTo()
+          $(swiper.el)
+            .find(".swiper-pagination-bullet")
+            .on("mouseenter", function () {
+              const index = $(this).index(); // Узнаем номер точки
+              swiper.slideTo(index); // Листаем к этому слайду без клика
+            });
+        },
+      },
     });
 
-    const paginationContainer = document.querySelector(
-      containerClass + " .catalog_item-pagination",
-    );
+    // --- ЛОГИКА КЛИКОВ (Остается без изменений) ---
 
-    if (paginationContainer) {
-      paginationContainer.addEventListener("mouseover", (e) => {
-        const bullet = e.target.closest(".swiper-pagination-bullet");
-        if (!bullet) return;
+    // 1. Реальный клик пользователя по точке -> Переход
+    $(containerClass).on("click", ".swiper-pagination-bullet", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
 
-        const allBullets = paginationContainer.querySelectorAll(
-          ".swiper-pagination-bullet",
-        );
-        const index = Array.from(allBullets).indexOf(bullet);
+      const link = $(this)
+        .closest(".catalog_item-slider")
+        .find(".catalog_item-link")
+        .attr("href");
 
-        if (index !== -1) {
-          slider.slideTo(index);
+      if (link) {
+        window.location.href = link;
+      }
+    });
+
+    // 2. Клик по ссылке-накладке
+    $(containerClass).on("click", ".catalog_item-link", function (e) {
+      if (!slider.animating) {
+        const link = $(this).attr("href");
+        if (link) {
+          window.location.href = link;
         }
-      });
-    }
+      }
+    });
 
     return slider;
   }

@@ -170,10 +170,9 @@
 	<section class="other">
 		<div class="container">
 			<h2 class="title">Смотрели недавно</h2>
-			<div class="bestsellers_items swiper-recently">
-				<div class="swiper-wrapper">
+			<div class="bestsellers_items">
 					{% for product in recently_viewed_products %}
-						<div class="catalog_item swiper-slide">
+						<div class="catalog_item">
 							<div class="catalog_item-slider swiper">
 								<div class="swiper-wrapper">
 									{% for image in product.images %}
@@ -219,7 +218,6 @@
 							</button>
 						</div>
 					{% endfor %}
-				</div>
 			</div>
 		</div>
 	</section>
