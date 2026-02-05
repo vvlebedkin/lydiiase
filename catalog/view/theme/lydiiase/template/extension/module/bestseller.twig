@@ -13,10 +13,11 @@
 				{% for product in products %}
 					<div class="catalog_item">
 						<div class="catalog_item-slider swiper">
+						<a href="{{ product.href }}" class="catalog_item-link"></a>
 							<div class="swiper-wrapper">
 								{% for image in product.images %}
 									<div class="catalog_item-slide swiper-slide">
-										<a href="{{ product.href }}"><img src="{{ image.thumb }}" alt="{{ product.name }}"></a>
+										<img src="{{ image.thumb }}" alt="{{ product.name }}">
 									</div>
 								{% endfor %}
 							</div>

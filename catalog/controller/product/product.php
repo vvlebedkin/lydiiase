@@ -465,119 +465,120 @@ class ControllerProductProduct extends Controller
             $data['recurrings'] = $this->model_catalog_product->getProfiles($this->request->get['product_id']);
 
             // --- ЛОГИКА "СМОТРЕЛИ НЕДАВНО" ---
-if (!isset($this->session->data['recently_viewed'])) {
-    $this->session->data['recently_viewed'] = array();
-}
+            if (! isset($this->session->data['recently_viewed'])) {
+                $this->session->data['recently_viewed'] = [];
+            }
 
 // Добавляем текущий товар в начало списка, если его там еще нет
-if (!in_array($this->request->get['product_id'], $this->session->data['recently_viewed'])) {
-    array_unshift($this->session->data['recently_viewed'], $this->request->get['product_id']);
-} else {
-    // Если товар уже был, перемещаем его в начало
-    $key = array_search($this->request->get['product_id'], $this->session->data['recently_viewed']);
-    unset($this->session->data['recently_viewed'][$key]);
-    array_unshift($this->session->data['recently_viewed'], $this->request->get['product_id']);
-}
+            if (! in_array($this->request->get['product_id'], $this->session->data['recently_viewed'])) {
+                array_unshift($this->session->data['recently_viewed'], $this->request->get['product_id']);
+            } else {
+                // Если товар уже был, перемещаем его в начало
+                $key = array_search($this->request->get['product_id'], $this->session->data['recently_viewed']);
+                unset($this->session->data['recently_viewed'][$key]);
+                array_unshift($this->session->data['recently_viewed'], $this->request->get['product_id']);
+            }
 
 // Храним только последние 6 товаров
-$this->session->data['recently_viewed'] = array_slice($this->session->data['recently_viewed'], 0, 6);
+            $this->session->data['recently_viewed'] = array_slice($this->session->data['recently_viewed'], 0, 5);
 
-$data['recently_viewed_products'] = array();
-$image_width = $this->config->get('theme_' . $this->config->get('config_theme') . '_image_related_width');
-$image_height = $this->config->get('theme_' . $this->config->get('config_theme') . '_image_related_height');
+            $data['recently_viewed_products'] = [];
+            $image_width                      = $this->config->get('theme_' . $this->config->get('config_theme') . '_image_related_width');
+            $image_height                     = $this->config->get('theme_' . $this->config->get('config_theme') . '_image_related_height');
 
+            foreach ($this->session->data['recently_viewed'] as $recent_id) {
+                // Не показываем в списке "Недавно смотрели" тот товар, на странице которого мы сейчас находимся
+                if ($recent_id == $this->request->get['product_id']) {
+                    continue;
+                }
 
-foreach ($this->session->data['recently_viewed'] as $recent_id) {
-    // Не показываем в списке "Недавно смотрели" тот товар, на странице которого мы сейчас находимся
-    if ($recent_id == $this->request->get['product_id']) continue;
+                $result = $this->model_catalog_product->getProduct($recent_id);
 
-    $result = $this->model_catalog_product->getProduct($recent_id);
-
-    if ($result) {
-        if ($result['image']) {
-            $image = $this->model_tool_image->resize($result['image'], $image_width, $image_height);
-        } else {
-            $image = $this->model_tool_image->resize('placeholder.png', $image_width, $image_height);
-        }
-
-		// Дополнительные изображения
-		$images = array();
-		$images[] = array(
-			'popup' => $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height')),
-			'thumb' => $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_height'))
-		);
-		$additional_images = $this->model_catalog_product->getProductImages($result['product_id']);
-		foreach ($additional_images as $additional_image) {
-			$images[] = array(
-				'popup' => $this->model_tool_image->resize($additional_image['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height')),
-				'thumb' => $this->model_tool_image->resize($additional_image['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_height'))
-			);
-		}
-
-		// Категория
-		$category_name = '';
-		$categories = $this->model_catalog_product->getCategories($result['product_id']);
-		if ($categories) {
-			$category_info = $this->model_catalog_category->getCategory($categories[0]['category_id']);
-			if($category_info) {
-				$category_name = $category_info['name'];
-			}
-		}
-		
-		// Опции (Цвет)
-		$colors = array();
-		$options = $this->model_catalog_product->getProductOptions($result['product_id']);
-		foreach ($options as $option) {
-			if (utf8_strtolower($option['name']) == 'цвет' || utf8_strtolower($option['name']) == 'color') {
-				foreach ($option['product_option_value'] as $option_value) {
-                    $raw_name = $option_value['name'];
-                    $color_code = '#ccc'; // По умолчанию
-                    $color_name = $raw_name;
-
-                    if (strpos($raw_name, '|') !== false) {
-                        // Если есть разделитель, разбиваем строку
-                        $parts = explode('|', $raw_name);
-                        $color_code = trim($parts[0]);
-                        $color_name = trim($parts[1]);
-                    } elseif (preg_match('/#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})/', $raw_name, $matches)) {
-                        // Если разделителя нет, но есть HEX-код (старая схема)
-                        $color_code = $matches[0];
-                        $color_name = trim(str_replace($color_code, '', $raw_name));
+                if ($result) {
+                    if ($result['image']) {
+                        $image = $this->model_tool_image->resize($result['image'], $image_width, $image_height);
+                    } else {
+                        $image = $this->model_tool_image->resize('placeholder.png', $image_width, $image_height);
                     }
 
-					$colors[] = array(
-						'name' => $color_name,
-						'color_code' => $color_code
-					);
-				}
-			}
-		}
+                    // Дополнительные изображения
+                    $images   = [];
+                    $images[] = [
+                        'popup' => $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height')),
+                        'thumb' => $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_height')),
+                    ];
+                    $additional_images = $this->model_catalog_product->getProductImages($result['product_id']);
+                    foreach ($additional_images as $additional_image) {
+                        $images[] = [
+                            'popup' => $this->model_tool_image->resize($additional_image['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height')),
+                            'thumb' => $this->model_tool_image->resize($additional_image['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_height')),
+                        ];
+                    }
 
-        if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
-            $price = $this->currency->format($this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-        } else {
-            $price = false;
-        }
+                    // Категория
+                    $category_name = '';
+                    $categories    = $this->model_catalog_product->getCategories($result['product_id']);
+                    if ($categories) {
+                        $category_info = $this->model_catalog_category->getCategory($categories[0]['category_id']);
+                        if ($category_info) {
+                            $category_name = $category_info['name'];
+                        }
+                    }
 
-        if ((float)$result['special']) {
-            $special = $this->currency->format($this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-        } else {
-            $special = false;
-        }
+                    // Опции (Цвет)
+                    $colors  = [];
+                    $options = $this->model_catalog_product->getProductOptions($result['product_id']);
+                    foreach ($options as $option) {
+                        if (utf8_strtolower($option['name']) == 'цвет' || utf8_strtolower($option['name']) == 'color') {
+                            foreach ($option['product_option_value'] as $option_value) {
+                                $raw_name   = $option_value['name'];
+                                $color_code = '#ccc'; // По умолчанию
+                                $color_name = $raw_name;
 
-        $data['recently_viewed_products'][] = array(
-            'product_id'  => $result['product_id'],
-            'thumb'       => $image,
-			'images'      => $images,
-			'category'    => $category_name,
-			'colors'      => $colors,
-            'name'        => $result['name'],
-            'price'       => $price,
-            'special'     => $special,
-            'href'        => $this->url->link('product/product', 'product_id=' . $result['product_id'])
-        );
-    }
-}
+                                if (strpos($raw_name, '|') !== false) {
+                                    // Если есть разделитель, разбиваем строку
+                                    $parts      = explode('|', $raw_name);
+                                    $color_code = trim($parts[0]);
+                                    $color_name = trim($parts[1]);
+                                } elseif (preg_match('/#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})/', $raw_name, $matches)) {
+                                    // Если разделителя нет, но есть HEX-код (старая схема)
+                                    $color_code = $matches[0];
+                                    $color_name = trim(str_replace($color_code, '', $raw_name));
+                                }
+
+                                $colors[] = [
+                                    'name'       => $color_name,
+                                    'color_code' => $color_code,
+                                ];
+                            }
+                        }
+                    }
+
+                    if ($this->customer->isLogged() || ! $this->config->get('config_customer_price')) {
+                        $price = $this->currency->format($this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+                    } else {
+                        $price = false;
+                    }
+
+                    if ((float) $result['special']) {
+                        $special = $this->currency->format($this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+                    } else {
+                        $special = false;
+                    }
+
+                    $data['recently_viewed_products'][] = [
+                        'product_id' => $result['product_id'],
+                        'thumb'      => $image,
+                        'images'     => $images,
+                        'category'   => $category_name,
+                        'colors'     => $colors,
+                        'name'       => $result['name'],
+                        'price'      => $price,
+                        'special'    => $special,
+                        'href'       => $this->url->link('product/product', 'product_id=' . $result['product_id']),
+                    ];
+                }
+            }
 
             $this->model_catalog_product->updateViewed($this->request->get['product_id']);
 
