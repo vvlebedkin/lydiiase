@@ -415,6 +415,7 @@ ul {
     color: #000;
     transition: all 0.3s;
     cursor: pointer;
+    background: transparent;
 }
 
 .btn:hover {
@@ -2385,6 +2386,9 @@ ul {
     cursor: pointer;
     user-select: none;
 }
+.count-arrow:focus, .count-arrow:active, .count-arrow:hover {
+    background: #E9E9E9;
+}
 
 .count-inp {
     width: calc(100% - 48px);
@@ -2407,7 +2411,7 @@ input[type=number] {
 }
 
 .count-arrow-plus {
-    background: #E9E9E9;
+    
 
 }
 
