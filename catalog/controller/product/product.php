@@ -714,7 +714,7 @@ foreach ($this->session->data['recently_viewed'] as $recent_id) {
         $pagination->limit = 5;
         $pagination->url   = $this->url->link('product/product/review', 'product_id=' . $this->request->get['product_id'] . '&page={page}');
 
-        $data['pagination'] = $pagination->render();
+        $data['pagination'] = $pagination->renderCatalog();
 
         $data['results'] = sprintf($this->language->get('text_pagination'), ($review_total) ? (($page - 1) * 5) + 1 : 0, ((($page - 1) * 5) > ($review_total - 5)) ? $review_total : ((($page - 1) * 5) + 5), $review_total, ceil($review_total / 5));
 

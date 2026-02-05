@@ -306,7 +306,7 @@ class ControllerProductManufacturer extends Controller {
 			$pagination->limit = $limit;
 			$pagination->url = $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $this->request->get['manufacturer_id'] .  $url . '&page={page}');
 
-			$data['pagination'] = $pagination->render();
+			$data['pagination'] = $pagination->renderCatalog();
 
 			$data['results'] = sprintf($this->language->get('text_pagination'), ($product_total) ? (($page - 1) * $limit) + 1 : 0, ((($page - 1) * $limit) > ($product_total - $limit)) ? $product_total : ((($page - 1) * $limit) + $limit), $product_total, ceil($product_total / $limit));
 

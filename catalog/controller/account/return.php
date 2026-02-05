@@ -69,7 +69,7 @@ class ControllerAccountReturn extends Controller {
 		$pagination->limit = $limit;
 		$pagination->url = $this->url->link('account/return', 'page={page}', true);
 
-		$data['pagination'] = $pagination->render();
+		$data['pagination'] = $pagination->renderCatalog();
 
 		$data['results'] = sprintf($this->language->get('text_pagination'), ($return_total) ? (($page - 1) * $limit) + 1 : 0, ((($page - 1) * $limit) > ($return_total - $limit)) ? $return_total : ((($page - 1) * $limit) + $limit), $return_total, ceil($return_total / $limit));
 

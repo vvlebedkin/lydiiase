@@ -83,7 +83,7 @@ class ControllerAccountDownload extends Controller {
 		$pagination->limit = $limit;
 		$pagination->url = $this->url->link('account/download', 'page={page}', true);
 
-		$data['pagination'] = $pagination->render();
+		$data['pagination'] = $pagination->renderCatalog();
 
 		$data['results'] = sprintf($this->language->get('text_pagination'), ($download_total) ? (($page - 1) * $limit) + 1 : 0, ((($page - 1) * $limit) > ($download_total - $limit)) ? $download_total : ((($page - 1) * $limit) + $limit), $download_total, ceil($download_total / $limit));
 

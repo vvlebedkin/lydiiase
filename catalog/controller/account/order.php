@@ -71,7 +71,7 @@ class ControllerAccountOrder extends Controller {
 		$pagination->limit = $limit;
 		$pagination->url = $this->url->link('account/order', 'page={page}', true);
 
-		$data['pagination'] = $pagination->render();
+		$data['pagination'] = $pagination->renderCatalog();
 
 		$data['results'] = sprintf($this->language->get('text_pagination'), ($order_total) ? (($page - 1) * $limit) + 1 : 0, ((($page - 1) * $limit) > ($order_total - $limit)) ? $order_total : ((($page - 1) * $limit) + $limit), $order_total, ceil($order_total / $limit));
 

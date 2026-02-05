@@ -67,7 +67,7 @@ class ControllerAccountTransaction extends Controller {
 		$pagination->limit = $limit;
 		$pagination->url = $this->url->link('account/transaction', 'page={page}', true);
 
-		$data['pagination'] = $pagination->render();
+		$data['pagination'] = $pagination->renderCatalog();
 
 		$data['results'] = sprintf($this->language->get('text_pagination'), ($transaction_total) ? (($page - 1) * $limit) + 1 : 0, ((($page - 1) * $limit) > ($transaction_total - $limit)) ? $transaction_total : ((($page - 1) * $limit) + $limit), $transaction_total, ceil($transaction_total / $limit));
 

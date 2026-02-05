@@ -72,7 +72,7 @@ class ControllerAccountRecurring extends Controller {
 		$pagination->limit = $limit;
 		$pagination->url = $this->url->link('account/recurring', 'page={page}', true);
 
-		$data['pagination'] = $pagination->render();
+		$data['pagination'] = $pagination->renderCatalog();
 
 		$data['continue'] = $this->url->link('account/account', '', true);
 
