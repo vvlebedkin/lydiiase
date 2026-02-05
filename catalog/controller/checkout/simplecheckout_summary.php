@@ -302,11 +302,19 @@ class ControllerCheckoutSimpleCheckoutSummary extends SimpleController {
 
             $sort_order = array();
 
-            foreach ($totals as $key => $value) {
+                        foreach ($totals as $key => $value) {
                 $sort_order[$key] = $value['sort_order'];
 
                 if (!isset($value['text'])) {
                     $totals[$key]['text'] = $this->simplecheckout->formatCurrency($value['value']);
+                }
+                
+                if ($value['code'] == 'shipping' && isset($this->session->data['shipping_method']['code'])) {
+                    $shipping_parts = explode('.', $this->session->data['shipping_method']['code']);
+                    $shipping_type = $shipping_parts[0]; // например, 'pickup' или 'flat'
+
+                    $this->load->language('extension/shipping/' . $shipping_type);
+                    $totals[$key]['title'] = $this->language->get('text_title');
                 }
             }
 

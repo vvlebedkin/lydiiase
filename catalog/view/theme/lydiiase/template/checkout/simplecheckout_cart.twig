@@ -30,11 +30,12 @@
 
 					{% if product['recurring'] is not empty %}
 						<div class="cart_item-option recurring">
-							<strong>{{ text_recurring_item }}</strong>
+							<strong>{{ text_recurring_item }}</strong> 
 							{{ product['profile_description'] }}
 						</div>
 					{% endif %}
 					<div class="cart_item-options">
+						<div class="cart_item-option">Арт.: {{product['model']}}</div>
 						<div class="cart_item-option">Категория:
 							{{ product['category'] ? product['category'] : 'сумки' }}</div>
 						{% for option in product['option'] %}
