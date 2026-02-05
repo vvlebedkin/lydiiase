@@ -1526,7 +1526,7 @@ ul {
 .catalog_aside-title {
     font-weight: 500;
     font-size: 22px;
-    margin-bottom: 30px;
+    margin-bottom: 0;
     position: relative;
 }
 
@@ -1563,10 +1563,10 @@ ul {
     text-align: right;
 }
 
-.filter_slider-inp {
-    width: 50%;
+.catalog_aside .filter_slider-inp {
+    width: 50% !important;
     margin-top: 22px;
-    border: 1px solid #000000;
+    border: 1px solid #000000; 
     height: 46px;
     text-align: center;
     font-size: 18px;
@@ -1626,16 +1626,32 @@ ul {
 .filter_check-color span {
     border-radius: 50%;
     border: none;
+    position: relative;
 }
+.filter_check-color span:before{
+    position: absolute;
+    display: block;
+    content: '';
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background-image: url(../img/filter_check2.svg);
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity .3s;
+} 
 
 .filter_check.filter_check-color:has(input:checked) {
     color: #000;
 }
 
-.filter_check.filter_check-color input:checked+span {
-    background-image: url(../img/filter_check2.svg);
+.filter_check.filter_check-color input:checked+span:before {
+    /* background-image: url(../img/filter_check2.svg);
     background-position: center;
-    background-repeat: no-repeat;
+    background-repeat: no-repeat; */
+    opacity: 1;
 }
 
 .catalog_aside-btn {
@@ -4036,4 +4052,44 @@ div:has(>.cart_inp):last-child {
     font-size: 14px;
     line-height: 18px;
   }
+}
+/* Отменяем скрытие блоков, которое навязывает JS модуля */
+.catalog_aside-item.bf-attr-block.bf-hidden {
+    display: block !important;
+}
+.catalog_aside .bf-attr-block-cont{
+    padding:  20px 0 0;
+}
+.catalog_aside .bf-attr-header{
+    padding: 0;
+}
+.bf-slider-label{
+    display: none !important;
+}
+.bf-slider-range.ui-slider-horizontal {
+  height: 1px !important;
+}
+
+.catalog_aside .ui-slider .ui-slider-handle {
+  
+  background: #000;
+  border: 1px solid #000;
+  width: 13px;
+  height: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 50%;
+}
+.catalog_aside .bf-slider-range.ui-slider .ui-slider-range {
+  top: auto;
+  bottom: auto;
+}
+.catalog_aside .ui-slider-range + .ui-slider-handle{
+    margin-left: 0 !important;
+}
+.catalog_aside .bf-price-container {
+  padding: 8px 5px;
+}
+.catalog_aside .bf-attr-header{
+    border-top: none;
 }

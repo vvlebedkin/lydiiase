@@ -139,6 +139,31 @@ $(document).ready(function () {
     $(this).find(".menu_dropdown").slideToggle(400);
   });
 
+  // Функция для форматирования чисел с пробелом (разделитель тысяч)
+  function bfFormatNumber(val) {
+    return String(Math.round(val)).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  }
+
+  var updateLabels = function () {
+    var min = $(".bf-range-min").val();
+    var max = $(".bf-range-max").val();
+    $(".bf-range-min-label").text(bfFormatNumber(min));
+    $(".bf-range-max-label").text(bfFormatNumber(max));
+  };
+
+  // Обновляем при загрузке
+  setTimeout(updateLabels, 500);
+
+  // Подхватываем событие самого слайдера Brainy Filter
+  $(document).on("bf_after_update", function () {
+    updateLabels();
+  });
+
+  // Дополнительный триггер для движения ползунка
+  $(".bf-slider-range").on("slide", function () {
+    setTimeout(updateLabels, 10);
+  });
+
   /* $(".catalog_filter-price").each(function () {
     var $slider = $(this);
     var $container = $slider.closest(".catalog_filter-slider");
