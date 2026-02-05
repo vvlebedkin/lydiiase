@@ -26,49 +26,16 @@
 				{{ product_total }}</div>
 		</div>
 
-		<div
-			class="catalog_wrapper">
-			{# Блок фильтров (оставляем статику по твоему запросу) #}
-			<div class="catalog_aside">
-				<div class="catalog_aside-item">
-					<div class="catalog_aside-title">Цена</div>
-					<div class="catalog_filter-slider">
-						<div class="catalog_filter-price"></div>
-						<div class="filter_slider-value min">
-							<span>0</span>
-							₽</div>
-						<div class="filter_slider-value max">
-							<span>30000</span>
-							₽</div>
-						<input type="text" class="filter_slider-inp min-inp" value="0">
-						<input type="text" class="filter_slider-inp max-inp" value="30000">
-					</div>
-				</div>
-				<div class="catalog_aside-item">
-					<div class="catalog_aside-title catalog_aside-tab">Материал</div>
-					<div class="filter_checks">
-						<label class="filter_check"><input type="checkbox"><span></span>Замша</label>
-						<label class="filter_check"><input type="checkbox"><span></span>Натуральная кожа</label>
-					</div>
-				</div>
-				<div class="catalog_aside-item">
-					<div class="catalog_aside-title catalog_aside-tab">Цвет</div>
-					<div class="filter_checks">
-						<label class="filter_check filter_check-color">
-							<input type="checkbox"><span style="background-color: #000000;"></span>
-							Чёрный
-						</label>
-					</div>
-				</div>
-				<button class="catalog_aside-btn btn">Показать</button>
-				<button class="catalog_aside-clean">Сбросить
-					<svg width="24" height="24" viewbox="0 0 24 24" fill="none"><path d="M6 6L18 18M18 6L6 18" stroke="black" stroke-linecap="round"/></svg>
-				</button>
-			</div>
+		<div class="catalog_wrapper">
 
-			<div
-				class="catalog_content">
-				{# 2. Подкатегории (Top Grid) #}
+			{{ column_left }}
+			{# Блок фильтров (оставляем статику по твоему запросу) #}
+			{# <div class="catalog_aside"> #}
+
+			{# </div> #}
+
+				<div
+				class="catalog_content"> {# 2. Подкатегории (Top Grid) #}
 				{% if categories %}
 					<div class="catalog_categoryes">
 						{% for category in categories %}
@@ -149,7 +116,7 @@
 
 				{# 4. Пагинация #}
 				{# Чтобы пагинация OpenCart (ul.pagination) выглядела как твоя (.pagin), 
-																                   мы можем либо изменить PHP-класс пагинации, либо использовать фильтр замены: #}
+																								                   мы можем либо изменить PHP-класс пагинации, либо использовать фильтр замены: #}
 				<div class="pagination_wrapper">
 					{{ pagination }}
 				</div>
