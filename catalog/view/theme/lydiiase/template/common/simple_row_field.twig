@@ -6,7 +6,7 @@
   Используем placeholder вместо label. Если placeholder не задан в админке,
   используем label (название поля), очищенный от HTML-тегов.
 #}
-{% set placeholder_text = placeholder ? placeholder : label|striptags %}
+{% set placeholder_text = (placeholder ?: label|striptags) ~ (required ? ' *' : '') %}
 
 <div class="simple-form-row {% if required %}required{% endif %}">
     
