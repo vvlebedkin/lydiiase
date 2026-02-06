@@ -6,6 +6,9 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<title>{{ title }}</title>
 		<base href="{{ base }}"/>
+		{% if icon %}
+			<link href="{{ icon }}" rel="icon"/>
+		{% endif %}
 		{% if description %}
 			<meta name="description" content="{{ description }}"/>
 		{% endif %}

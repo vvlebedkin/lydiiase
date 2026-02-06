@@ -25,8 +25,10 @@ class ControllerCommonHeader extends Controller
             $server = $this->config->get('config_url');
         }
 
+        $data['icon'] = '';
         if (is_file(DIR_IMAGE . $this->config->get('config_icon'))) {
             $this->document->addLink($server . 'image/' . $this->config->get('config_icon'), 'icon');
+            $data['icon'] = $server . 'image/' . $this->config->get('config_icon');
         }
 
         $data['title'] = $this->document->getTitle();
@@ -125,8 +127,8 @@ class ControllerCommonHeader extends Controller
 
         // Бегущая строка из настроек
         $comment = $this->config->get('config_comment');
-        if (!empty($comment)) {
-            $phrases = explode('|', $comment);
+        if (! empty($comment)) {
+            $phrases                   = explode('|', $comment);
             $data['top_lines_phrases'] = array_map('trim', $phrases);
         } else {
             $data['top_lines_phrases'] = [];

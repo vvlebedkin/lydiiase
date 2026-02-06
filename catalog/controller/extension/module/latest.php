@@ -17,12 +17,14 @@ class ControllerExtensionModuleLatest extends Controller
         $data['promo_banners'] = [];
         $results               = $this->model_design_banner->getBanner(10); // Замени 9 на ID созданного баннера
 
+        $server = $this->request->server['HTTPS'] ? $this->config->get('config_ssl') : $this->config->get('config_url');
+
         foreach ($results as $result) {
             if (is_file(DIR_IMAGE . $result['image'])) {
                 $data['promo_banners'][] = [
                     'title' => $result['title'],
                     'link'  => $result['link'],
-                    'image' => $this->model_tool_image->resize($result['image'], 1040, 1500), // Размеры твоей картинки
+                    'image' => $server . 'image/' . $result['image'],
                 ];
             }
         }
@@ -33,8 +35,8 @@ class ControllerExtensionModuleLatest extends Controller
 
         if ($results) {
             foreach ($results as $result) {
-                if ($result['image']) {
-                    $image = $this->model_tool_image->resize($result['image'], $setting['width'], $setting['height']);
+                if ($result['image'] && is_file(DIR_IMAGE . $result['image'])) {
+                    $image = $server . 'image/' . $result['image'];
                 } else {
                     $image = $this->model_tool_image->resize('placeholder.png', $setting['width'], $setting['height']);
                 }
