@@ -169,48 +169,78 @@ simplecheckout_{{ group }}.init();
 					{% endif %}
 
 					<div class="cart_wrapper">
-    <div class="cart_items">
-        {{ simple_blocks['cart'] }}
-    </div>
-    <div class="cart_right">
-        {{ simple_blocks['summary'] }}
-    </div>
-</div>
+						<div class="cart_items">
+							{{ simple_blocks['cart'] }}
+						</div>
+						<div class="cart_right">
+							{{ simple_blocks['summary'] }}
+						</div>
+					</div>
 
-<div class="cart_form">
-    <div class="cart_title">Данные покупателя</div>
-    {{ simple_blocks['customer'] }}
+					<div class="cart_form">
+						<div class="cart_title">Данные покупателя</div>
+						{{ simple_blocks['customer'] }}
 
-     {{ simple_blocks['shipping_address'] }}
-    
-    <div class="cart_title">Способ доставки</div>
-    {{ simple_blocks['shipping'] }}
+						{{ simple_blocks['shipping_address'] }}
+						
+						<div class="cart_title">Способ доставки</div>
+						{{ simple_blocks['shipping'] }}
 
-    <div class="cart_title">Способ оплаты</div>
-    {{ simple_blocks['payment'] }}
+						<div class="cart_title">Способ оплаты</div>
+						{{ simple_blocks['payment'] }}
 
-    <div id="simplecheckout_payment_form">{{ simple_blocks['payment_form'] }}</div>
+						<div id="simplecheckout_payment_form">{{ simple_blocks['payment_form'] }}</div>
 
-    <div class="cart_title">Комментарий</div>
-    {{ simple_blocks['comment'] }}
+						<div class="cart_title">Комментарий</div>
+						{{ simple_blocks['comment'] }}
 
-    {{ simple_blocks['agreement'] }}
+						{# <div style="display:none;">
+							{{ simple_blocks['agreement'] }}
+						</div> #}
 
-    <button type="button" class="cart_form-btn btn" data-onclick="createOrder" id="simplecheckout_button_confirm"><span>Оформить заказ</span></button>
-</div>
+						<div id="agreement_checkbox" style="display:none;">
+							{% for agreement_id, text_agreement in text_agreements %}
+								<input type="checkbox" name="agreements[]" value="{{ agreement_id }}" {{ agreement_id in agreements ? 'checked="checked"' : '' }} />
+							{% endfor %}
+						</div>
 
-<div id="simplecheckout_bottom" style="width:100%;height:1px;clear:both;"></div>
-<div class="simplecheckout-proceed-payment" id="simplecheckout_proceed_payment" style="display:none;">{{ text_proceed_payment }}</div>
+						<div class="cart_form-agreements">
+							<label class="form_ok">
+								<input type="checkbox" id="custom_agree_policy" value="1">
+								<span></span>
+								Я ознакомлен и согласен с <a href="">политикой обработки персональных данных</a>
+							</label>
+							<label class="form_ok">
+								<input type="checkbox" id="custom_agree_newsletter" value="1">
+								<span></span>
+								Я ознакомлен и согласен с <a href="">согласием на получение рекламной рассылки</a>
+							</label>
+						</div>
 
-{% if display_agreement_checkbox %}
-    <div class="alert alert-danger simplecheckout-warning-block" id="agreement_warning" {% if display_error and has_error %} data-error="true" {% else %} style="display:none;" {% endif %}>
-        <div class="agreement_all">
-            {% for agreement_id, warning_agreement in error_warning_agreement %}
-                <div class="agreement_{{ agreement_id }}">{{ warning_agreement }}</div>
-            {% endfor %}
-        </div>
-    </div>
-{% endif %}
+						<div class="alert alert-danger cart_form-error" id="custom_agreement_warning" style="display:none; margin-bottom: 15px;">
+							<div id="custom_error_1" style="display:none;">Необходимо принять политику обработки персональных данных</div>
+							<div id="custom_error_2" style="display:none;">Необходимо дать согласие на получение рекламной рассылки</div>
+						</div>
+
+						<button type="button" class="cart_form-btn btn" id="custom_button_confirm"><span>Оформить заказ</span></button>
+
+						<div style="display:none;">
+							<button type="button" data-onclick="createOrder" id="simplecheckout_button_confirm"></button>
+						</div>
+					</div>
+
+					<div id="simplecheckout_bottom" style="width:100%;height:1px;clear:both;"></div>
+					<div class="simplecheckout-proceed-payment" id="simplecheckout_proceed_payment" style="display:none;">{{ text_proceed_payment }}</div>
+
+					{% if display_agreement_checkbox %}
+						<div class="alert alert-danger simplecheckout-warning-block" id="agreement_warning" {% if display_error and has_error %} data-error="true" {% else %} style="display:none;" {% endif %}>
+							<div class="agreement_all">
+								{% for agreement_id, warning_agreement in error_warning_agreement %}
+									<div class="agreement_{{ agreement_id }}">{{ warning_agreement }}</div>
+								{% endfor %}
+							</div>
+						</div>
+					{% endif %}
 
 
 
@@ -250,3 +280,80 @@ simplecheckout_{{ group }}.init();
 	</div>
 	{{ simple_footer }}
 {% endif %}
+
+<script>
+$(document).ready(function() {
+    // Используем $(document).on, чтобы скрипт продолжал работать после AJAX-перезагрузок корзины
+    $(document).on('click', '#custom_button_confirm', function(e) {
+        e.preventDefault(); // Останавливаем стандартное поведение
+        
+        var policyChecked = $('#custom_agree_policy').is(':checked');
+        var newsletterChecked = $('#custom_agree_newsletter').is(':checked');
+        var hasError = false;
+
+        // Скрываем прошлые ошибки
+        $('#custom_agreement_warning').hide();
+        $('#custom_error_1, #custom_error_2').hide();
+
+        // Проверяем первый чекбокс
+        if (!policyChecked) {
+            $('#custom_error_1').show();
+            hasError = true;
+        }
+        
+        // Проверяем второй чекбокс
+        if (!newsletterChecked) {
+            $('#custom_error_2').show();
+            hasError = true;
+        }
+
+        if (hasError) {
+            // Если есть ошибки - показываем блок и никуда не отправляем заказ
+            $('#custom_agreement_warning').fadeIn(200);
+        } else {
+            // Если обе галочки стоят, ищем скрытый чекбокс модуля (если он включен в админке) и ставим в нем галочку
+            var $nativeCheckbox = $('#agreement_checkbox input[type="checkbox"]');
+            if ($nativeCheckbox.length) {
+                $nativeCheckbox.prop('checked', true);
+            }
+            
+            // Программно "кликаем" по оригинальной кнопке Simple
+            $('#simplecheckout_button_confirm').click();
+        }
+    });
+
+    // Скрываем красную ошибку сразу, как только пользователь ставит галочку
+    $(document).on('change', '#custom_agree_policy, #custom_agree_newsletter', function() {
+        $('#custom_agreement_warning').hide();
+    });
+
+	// 1. Функция для восстановления состояния из памяти браузера
+    function restoreCustomAgreements() {
+        if (sessionStorage.getItem('custom_agree_policy') === 'true') {
+            $('#custom_agree_policy').prop('checked', true);
+        }
+        if (sessionStorage.getItem('custom_agree_newsletter') === 'true') {
+            $('#custom_agree_newsletter').prop('checked', true);
+        }
+    }
+
+    // Восстанавливаем галочки при первоначальной загрузке страницы
+    restoreCustomAgreements();
+
+    // 2. Запоминаем выбор пользователя каждый раз, когда он кликает по чекбоксу
+    $(document).on('change', '#custom_agree_policy', function() {
+        sessionStorage.setItem('custom_agree_policy', $(this).is(':checked'));
+    });
+    
+    $(document).on('change', '#custom_agree_newsletter', function() {
+        sessionStorage.setItem('custom_agree_newsletter', $(this).is(':checked'));
+    });
+
+    // 3. Заново ставим галочки после того, как модуль обновил корзину через AJAX
+    $(document).ajaxComplete(function(event, xhr, settings) {
+        if (settings.url.indexOf("checkout/simplecheckout") !== -1) {
+            restoreCustomAgreements();
+        }
+    });
+});
+</script>

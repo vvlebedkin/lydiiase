@@ -80,18 +80,18 @@
                     {% if section['type'] == 'price' %}{{ lang_price }}{% elseif section['type'] == 'search' %}{{ lang_search }}{% elseif section['type'] == 'category' %}{{ lang_categories }}{% else %}{{ section['array']|first.name }}{% endif %}
                 </div>
 
-                <div class="bf-attr-block-cont">
+                <div class="bf-attr-block-cont"> 
                     {# --- БЛОК ЦЕНЫ --- #}
                     {% if section['type'] == 'price' %}
-                        <div class="catalog_filter-slider bf-price-container">
+                        <div class="catalog_filter-slider bf-price-container"> 
                             <div class="catalog_filter-price bf-slider-range" data-slider-type="3"></div>
                             
                             <div class="filter_slider-value min">
-														    <span id="bf-range-min-label-{{ layout_id }}" class="bf-range-min-label">{{ lowerlimit }}</span> {{ currency_symbol }}
-														</div>
-														<div class="filter_slider-value max">
-														    <span id="bf-range-max-label-{{ layout_id }}" class="bf-range-max-label">{{ upperlimit }}</span> {{ currency_symbol }}
-														</div>
+								<span id="bf-range-min-label-{{ layout_id }}" class="bf-range-min-label">{{ lowerlimit }}</span> {{ currency_symbol }}
+							</div>
+							<div class="filter_slider-value max">
+								<span id="bf-range-max-label-{{ layout_id }}" class="bf-range-max-label">{{ upperlimit }}</span> {{ currency_symbol }}
+							</div>
                             
                             <input type="text" class="filter_slider-inp min-inp bf-range-min" name="bfp_price_min" value="{{ lowerlimit }}">
                             <input type="text" class="filter_slider-inp max-inp bf-range-max" name="bfp_price_max" value="{{ upperlimit }}">
@@ -115,13 +115,13 @@
 									(group.mode == 'img' or group.mode == 'img_label' or value.image) %}
 
 								<label class="filter_check bf-attr-filter {{ isColor ? 'filter_check-color' : '' }} {% if totals is defined and not totals[groupUID][valId] and not isSelected %}disabled{% endif %}">
-
+    
 									<input type="checkbox" 
-										name="bfp_{{ groupUID }}_{{ valId }}" 
+										name="bfp_{{ groupUID }}{{ section.type == 'category' or section.type == 'attribute' ? '_' ~ valId : '' }}" 
 										value="{{ valId }}"
 										{% if isSelected %}checked="checked"{% endif %}
 										id="bf-attr-{{ groupUID }}_{{ valId }}_{{ layout_id }}"
-										data-filterid="bf-attr-{{ groupUID }}_{{ valId }}"> {# <-- Теперь ID у каждого чекбокса будет уникальным #}
+										data-filterid="bf-attr-{{ groupUID }}_{{ valId }}"> {# <-- Важный атрибут для JS #}
 									
 									{% if value.image %}
 										<span style="background-image: url('image/{{ value.image }}'); background-size: cover; background-color: #eee;"></span>
@@ -129,7 +129,7 @@
 										<span></span>
 									{% endif %}
 									
-									{{ '|' in value.name ? value.name|split('|')|last|trim : value.name }}
+									{{ value.name|contains('|') ? value.name|split('|')|last|trim : value.name }}
 								</label>
 							{% endfor %}
                         </div>
@@ -139,11 +139,11 @@
         {% endfor %}
 
         {# --- КНОПКИ --- #}
-        {# <button class="catalog_aside-btn btn bf-buttonsubmit" onclick="BrainyFilter.sendRequest(jQuery(this)); return false;">
+        <button class="catalog_aside-btn btn bf-buttonsubmit" onclick="BrainyFilter.sendRequest(jQuery(this)); return false;">
             {{ lang_submit }}
-        </button> #}
+        </button>
         
-        <button style="display: none;" class="catalog_aside-clean" onclick="BrainyFilter.reset(); return false;">
+        <button class="catalog_aside-clean" onclick="BrainyFilter.reset(); return false;">
             {{ reset }}
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M6 6L18 18M18 6L6 18" stroke="black" stroke-linecap="round" />
@@ -205,54 +205,4 @@ BrainyFilter.sliderValues['{{ groupUID }}'] = {{ group['values']|json_encode() }
 {% endif %}
 {% endfor %}
 {% endif %}
-
-
-// --- УПРАВЛЕНИЕ ВИДИМОСТЬЮ КНОПКИ СБРОСА ---
-jQuery(function() {
-    function toggleResetBtn() {
-        var isFiltered = false;
-        
-        // 1. Проверяем, отмечен ли хотя бы один чекбокс
-        if (jQuery('.bf-form input[type="checkbox"]:checked').length > 0) {
-            isFiltered = true;
-        }
-        
-        // 2. Проверяем, сдвинут ли ползунок цены (если он есть)
-        if (jQuery('.bf-range-min').length) {
-            var currentMin = parseFloat(jQuery('.bf-range-min').val());
-            var currentMax = parseFloat(jQuery('.bf-range-max').val());
-            
-            // Если текущая цена больше минимальной или меньше максимальной
-            if (currentMin > BrainyFilter.min || currentMax < BrainyFilter.max) {
-                isFiltered = true;
-            }
-        }
-        
-        // Показываем или скрываем кнопку
-        if (isFiltered) {
-            jQuery('.catalog_aside-clean').fadeIn(200);
-        } else {
-            jQuery('.catalog_aside-clean').fadeOut(200);
-        }
-    }
-
-    // Проверяем статус при загрузке страницы (если пользователь зашел по ссылке с фильтрами)
-    toggleResetBtn();
-
-    // Слушаем клики по чекбоксам
-    jQuery('.bf-form').on('change', 'input[type="checkbox"]', toggleResetBtn);
-    
-    // Слушаем ручной ввод цены в инпуты
-    jQuery('.bf-form').on('keyup change', '.filter_slider-inp', toggleResetBtn);
-    
-    // Слушаем остановку ползунка цены
-    jQuery('.bf-slider-range').on('slidestop', toggleResetBtn);
-    
-    // Проверяем статус через мгновение после нажатия на саму кнопку "Сбросить"
-    jQuery('.catalog_aside-clean').on('click', function() {
-        setTimeout(toggleResetBtn, 100);
-    });
-});
-
-
 </script>{% endif %}

@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<modification>
+    <name>Contact Page Email Variables Fix</name>
+    <code>lydiiase_contact_email_fix</code>
+    <version>1.0.0</version>
+    <author>Codex</author>
+
+    <file path="catalog/controller/information/contact.php">
+        <operation>
+            <search><![CDATA[$data['email'] = $this->config->get('config_email');]]></search>
+            <add position="after"><![CDATA[
+        $data['contact_email'] = $this->config->get('config_email');
+            ]]></add>
+        </operation>
+
+        <operation>
+            <search><![CDATA[$data['email2'] = $this->config->get('config_email2');]]></search>
+            <add position="after"><![CDATA[
+        $data['contact_email2'] = $this->config->get('config_email2');
+            ]]></add>
+        </operation>
+    </file>
+
+    <file path="catalog/view/theme/lydiiase/template/information/contact.twig">
+        <operation>
+            <search><![CDATA[<a href="mailto:{{ email }}" class="contacts_item-link">{{ email }}</a>]]></search>
+            <add position="replace"><![CDATA[<a href="mailto:{{ contact_email|default(email) }}" class="contacts_item-link">{{ contact_email|default(email) }}</a>]]></add>
+        </operation>
+
+        <operation>
+            <search><![CDATA[{% if email2 %}
+                    <a href="mailto:{{ email2 }}" class="contacts_item-link">{{ email2 }}</a>
+                    {% endif %}]]></search>
+            <add position="replace"><![CDATA[{% if contact_email2|default(email2) %}
+                    <a href="mailto:{{ contact_email2|default(email2) }}" class="contacts_item-link">{{ contact_email2|default(email2) }}</a>
+                    {% endif %}]]></add>
+        </operation>
+    </file>
+</modification>

@@ -482,7 +482,7 @@ ul {
 }
 
 .top_lines-wrapper {
-    /* position: absolute; */
+    position: absolute;
     top: 0;
     right: 0;
     width: 100%;
@@ -490,7 +490,6 @@ ul {
     background: #000000;
     display: flex;
     z-index: 11;
-    position: relative;
 }
 
 .top_lines-close {
@@ -1457,6 +1456,7 @@ ul {
     display: flex;
     align-items: center;
     gap: 7px;
+    color: #000;
 }
 
 .crumb::before {
@@ -2533,7 +2533,7 @@ div:has(>.cart_inp):last-child {
     top: -3px;
 }
 
-.cart_check input:checked+span {
+.cart_check input:checked~span {
     background-image: url(../img/filter_check.svg);
     background-size: 26px;
     background-position: center;
@@ -4162,4 +4162,59 @@ div:has(>.cart_inp):last-child {
 /* Возвращаем кликабельность самим точкам */
 .catalog_item-pagination .swiper-pagination-bullet {
     pointer-events: auto;
+}
+
+#simplecheckout_customer{
+    margin-bottom: 0 !important;
+}
+#simplecheckout_customer .cart_inner{
+    padding-bottom: 9px !important;
+}
+#simplecheckout_shipping_address .cart_inner{ 
+    padding-top: 0 !important;
+}
+
+#simplecheckout_shipping_address.simplecheckout-block .cart_inner{
+    padding-top: 0 !important;
+}
+
+.cart_check:has(.cdek_btn){
+    padding-bottom: 50px;
+}
+.cdek_btn{
+    position: absolute;
+    left: 45px;
+    bottom: 0;
+    display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content !important;
+  border: 1px solid #000 !important;
+  border-radius: 100px !important;
+  padding: 10px 22px !important;
+  gap: 10px;
+  line-height: 1;
+  font-size: 18px;
+  color: #000 !important;
+  transition: all 0.3s;
+  background: #fff !important;
+}
+
+.cdek_btn:hover {
+  background: #000 !important;
+  color: #fff !important;
+}
+.cdek_office_info{
+    position: absolute;
+    left: 225px;
+  bottom: 10px;
+}
+.cart_check:has(.cdek_btn) .cart_check-sbutitle{
+    display: none !important;
+}
+
+@media (max-width: 767.98px) {
+  .cdek_btn {
+    font-size: 16px;
+  }
 }
